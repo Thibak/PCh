@@ -6,12 +6,12 @@
 
 Модуль AppFingering (Транслятор Аппликатуры) — это "словарь" системы.
 
-Его **единственная задача** — транслировать (переводить) события SENSOR\_MASK\_CHANGED (какие сенсоры *сейчас* нажаты) и HALF\_HOLE\_DETECTED (жест "полузакрытие") в конкретную MIDI-ноту, используя правила из файла fingering.cfg.
+Его **единственная задача** — транслировать (переводить) события `SENSOR_MASK_CHANGED` (какие сенсоры *сейчас* нажаты) и `HALF_HOLE_DETECTED` (жест "полузакрытие") в конкретную MIDI-ноту, используя правила из файла `fingering.cfg`.
 
 * AppFingering **не знает** о физических пинах (T1), порогах срабатывания или вибрато.  
-* Он получает SensorMaskChanged(0b11111110) от app/logic.  
-* Он ищет эту маску в своей карте, которую он загрузил из fingering.cfg при старте.  
-* Он публикует NotePitchSelected(62).
+* Он получает `SensorMaskChanged(0b11111110)` от `app/logic`.  
+* Он ищет эту маску в своей карте, которую он загрузил из `fingering.cfg` при старте.  
+* Он публикует `NotePitchSelected(62)`.
 
 ## **2\. Зависимости (Обновлено)**
 
@@ -26,14 +26,15 @@
 
 Для быстрой трансляции AppFingering будет использовать std::map (или std::unordered\_map для скорости), который загружается в RAM при старте.
 
+```cpp
 // (Примерная структура данных в AppFingering.cpp)
 
-// Структура для хранения одного правила (обычная нота \+ опциональное полузакрытие)  
+// Структура для хранения одного правила (обычная нота + опциональное полузакрытие)  
 struct FingeringRule {  
-    int mainNote; // MIDI-нота (0-127), 0 \= Note Off  
+    int mainNote; // MIDI-нота (0-127), 0 = Note Off  
       
-    // Карта \<sensor\_id, note\> для правил полузакрытия  
-    // (напр., m\_halfHoleRules\[1\] \= 63\)  
+    // Карта <sensor_id, note> для правил полузакрытия  
+    // (напр., m_halfHoleRules[1] = 63)  
     std::map\<int, int\> halfHoleRules;   
       
     FingeringRule() : mainNote(0) {}  
@@ -41,8 +42,9 @@ struct FingeringRule {
 
 // Главная карта аппликатур  
 // Key: 8-битная маска (0b11111110)  
-// Value: Правило (нота 62 \+ правила полузакрытия)  
-std::map\<uint8\_t, FingeringRule\> m\_fingeringMap;
+// Value: Правило (нота 62 + правила полузакрытия)  
+std::map<uint8_t, FingeringRule> m_fingeringMap;
+```
 
 ### **3.2. Фаза init(IHalStorage\* storage)**
 
@@ -103,67 +105,69 @@ std::map\<uint8\_t, FingeringRule\> m\_fingeringMap;
 
 ## **4\. Публичный API (C++ Header)**
 
+```cpp
 // (AppFingering.h)  
-\#pragma once
+#pragma once
 
-\#include "hal\_interfaces/i\_hal\_storage.h"  
-\#include "core/event\_dispatcher.h"  
-\#include "i\_event\_handler.h"  
-\#include \<map\>
+#include "hal_interfaces/i_hal_storage.h"  
+#include "core/event_dispatcher.h"  
+#include "i_event_handler.h"  
+#include <map>
 
 // (Определение структуры FingeringRule)  
 struct FingeringRule {  
     int mainNote;  
-    std::map\<int, int\> halfHoleRules;  
+    std::map<int, int> halfHoleRules;  
     FingeringRule() : mainNote(0) {}  
 };
 
 class AppFingering : public IEventHandler {  
 public:  
-    /\*\*  
-     \* @param storage Указатель на HAL Storage, откуда будет прочитан fingering.cfg  
-     \*/  
+    /**  
+     * @param storage Указатель на HAL Storage, откуда будет прочитан fingering.cfg  
+     */  
     AppFingering();  
       
-    /\*\*  
-     \* @brief Читает и парсит fingering.cfg из хранилища.  
-     \* @return true, если конфиг успешно загружен и распарсен.  
-     \*/  
-    bool init(IHalStorage\* storage);
+    /**  
+     * @brief Читает и парсит fingering.cfg из хранилища.  
+     * @return true, если конфиг успешно загружен и распарсен.  
+     */  
+    bool init(IHalStorage* storage);
 
-    /\*\*  
-     \* @brief Подписывает модуль на события от EventDispatcher.  
-     \*/  
-    void subscribe(EventDispatcher\* dispatcher);
+    /**  
+     * @brief Подписывает модуль на события от EventDispatcher.  
+     */  
+    void subscribe(EventDispatcher* dispatcher);
 
-    /\*\*  
-     \* @brief Обрабатывает SENSOR\_MASK\_CHANGED и HALF\_HOLE\_DETECTED.  
-     \*/  
+    /**  
+     * @brief Обрабатывает SENSOR_MASK_CHANGED и HALF_HOLE_DETECTED.  
+     */  
     virtual void handleEvent(const Event& event) override;
 
 private:  
-    /\*\*  
-     \* @brief Внутренний метод парсинга fingering.cfg.  
-     \*/  
+    /**  
+     * @brief Внутренний метод парсинга fingering.cfg.  
+     */  
     void parseFingeringConfig(const std::string& fileContent);
 
-    /\*\*  
-     \* @brief Ищет ноту в m\_fingeringMap по маске и (опционально) ID сенсора полузакрытия.  
-     \*/  
-    int findNote(uint8\_t mask, int halfHoleSensorId \= \-1);
+    /**  
+     * @brief Ищет ноту в m_fingeringMap по маске и (опционально) ID сенсора полузакрытия.  
+     */  
+    int findNote(uint8_t mask, int halfHoleSensorId = -1);
 
-    /\*\*  
-     \* @brief Публикует событие NOTE\_PITCH\_SELECTED, если нота изменилась.  
-     \*/  
+    /**  
+     * @brief Публикует событие NOTE_PITCH_SELECTED, если нота изменилась.  
+     */  
     void publishNote(int note);
 
-    EventDispatcher\* m\_dispatcher;  
-    std::map\<uint8\_t, FingeringRule\> m\_fingeringMap;
+    EventDispatcher* m_dispatcher;  
+    std::map<uint8_t, FingeringRule> m_fingeringMap;
 
     // Переменные состояния  
-    uint8\_t m\_currentMask; // Последняя активная маска  
-    int m\_lastPublishedNote; // Последняя отправленная нота (для защиты от "дребезга")  
+    uint8_t m_currentMask; // Последняя активная маска  
+    int m_lastPublishedNote; // Последняя отправленная нота (для защиты от "дребезга")  
 };
+```
 
 ## **5\. Тестирование (Host-First)**
 

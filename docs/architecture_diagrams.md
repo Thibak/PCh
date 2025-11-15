@@ -225,20 +225,20 @@ sequenceDiagram
 Этот сенсор (mute_sensor_id) имеет 2 состояния, разделенных одним порогом mute_threshold.
 
 ```mermaid
-stateDiagram-v2
+stateDiagram
     direction LR
     [*] --> OPEN
-    
+
     state OPEN {
-        description: value < mute_threshold
-    }
-    
-    state CLOSED {
-        description: value > mute_threshold
+        note right of OPEN : value < mute_threshold
     }
 
-    OPEN --> CLOSED: value > mute_threshold
-    CLOSED --> OPEN: value < mute_threshold
+    state CLOSED {
+        note right of CLOSED : value > mute_threshold
+    }
+
+    OPEN --> CLOSED : value > mute_threshold
+    CLOSED --> OPEN : value < mute_threshold
 ```
 
 ### **5\.2\. Игровой сенсор (3-х позиционный)**
@@ -246,25 +246,26 @@ stateDiagram-v2
 Все игровые сенсоры (hole_sensor_ids) имеют 3 состояния, разделенных двумя порогами.
 
 ```mermaid
-stateDiagram-v2
+stateDiagram
     direction LR
     [*] --> OPEN
 
     state OPEN {
-        description: value < half_hole_threshold
+        note right of OPEN : value < half_hole_threshold
     }
     
     state HALF_HOLE {
-        description: value > half_hole_threshold<br/>value < hole_closed_threshold
+        note right of HALF_HOLE : value > half_hole_threshold\nvalue < hole_closed_threshold
     }
     
     state CLOSED {
-        description: value > hole_closed_threshold
+        note right of CLOSED : value > hole_closed_threshold
     }
 
-    OPEN --> HALF_HOLE: value > half_hole_threshold
-    HALF_HOLE --> CLOSED: value > hole_closed_threshold
+    OPEN --> HALF_HOLE : value > half_hole_threshold
+    HALF_HOLE --> CLOSED : value > hole_closed_threshold
     
-    CLOSED --> HALF_HOLE: value < hole_closed_threshold
-    HALF_HOLE --> OPEN: value < half_hole_threshold
+    CLOSED --> HALF_HOLE : value < hole_closed_threshold
+    HALF_HOLE --> OPEN : value < half_hole_threshold
+
 ```
