@@ -9,36 +9,36 @@
 graph TD  
     subgraph "Hardware (Физический уровень)"  
         direction LR  
-        Sensors\[Сенсоры (Touch Pins)\]  
-        LED\[LED (встроенный)\]  
-        BLE\_HW\[BLE Радио\]  
-        USB\_HW\[USB-C (встроенный)\]  
-        PSW\[Кнопка питания (внешняя)\]  
+        Sensors[Сенсоры (Touch Pins)]  
+        LED[LED (встроенный)]  
+        BLE\_HW[BLE Радио]  
+        USB\_HW[USB-C (встроенный)]  
+        PSW[Кнопка питания (внешняя)]  
     end
 
     subgraph "Application Layer (app/)"  
         direction TB  
-        APP\_Logic\["app/logic\<br\>(Интерпретатор)"\]  
-        APP\_Fingering\["app/fingering\<br\>(Транслятор аппликатуры)"\]  
-        APP\_Midi\["app/midi\<br\>(Формирователь MIDI)"\]  
+        APP\_Logic["app/logic\<br\>(Интерпретатор)"]  
+        APP\_Fingering["app/fingering\<br\>(Транслятор аппликатуры)"]  
+        APP\_Midi["app/midi\<br\>(Формирователь MIDI)"]  
     end
 
     subgraph "HAL (hal/)"  
         direction TB  
-        HAL\_Sensors\["hal\_sensors\<br\>(i\_hal\_sensor.h)"\]  
-        HAL\_LED\["hal\_led\<br\>(i\_hal\_led.h)"\]  
-        HAL\_BLE\["hal\_ble\<br\>(i\_hal\_ble.h)"\]  
-        HAL\_USB\["hal\_usb\<br\>(i\_hal\_usb.h)"\]  
-        HAL\_Storage\["hal\_storage\<br\>(i\_hal\_storage.h)"\]  
-        HAL\_Power\["hal\_power\<br\>(i\_hal\_power.h)"\]  
+        HAL\_Sensors["hal\_sensors\<br\>(i\_hal\_sensor.h)"]  
+        HAL\_LED["hal\_led\<br\>(i\_hal\_led.h)"]  
+        HAL\_BLE["hal\_ble\<br\>(i\_hal\_ble.h)"]  
+        HAL\_USB["hal\_usb\<br\>(i\_hal\_usb.h)"]  
+        HAL\_Storage["hal\_storage\<br\>(i\_hal\_storage.h)"]  
+        HAL\_Power["hal\_power\<br\>(i\_hal\_power.h)"]  
     end
 
     subgraph "CORE (core/)"  
         direction TB  
-        CORE\_Event\["core/event\_dispatcher\<br\>(Событийная шина)"\]  
-        CORE\_Config\["core/config\_manager\<br\>(Менеджер конфиг.)"\]  
-        CORE\_Log\["diagnostics & logging\<br\>(Логирование)"\]  
-        CORE\_Scheduler\["core/scheduler\<br\>(Планировщик)"\]  
+        CORE\_Event["core/event\_dispatcher\<br\>(Событийная шина)"]  
+        CORE\_Config["core/config\_manager\<br\>(Менеджер конфиг.)"]  
+        CORE\_Log["diagnostics & logging\<br\>(Логирование)"]  
+        CORE\_Scheduler["core/scheduler\<br\>(Планировщик)"]  
     end
 
     %% Связи APP  
@@ -151,17 +151,17 @@ sequenceDiagram
 graph TD  
     subgraph "Корпус устройства"  
         subgraph "Плата разработки (Dev Board)"  
-            ESP32\["ESP32-S3"\]  
-            TP4056\["Модуль зарядки\<br\>(TP4056)"\]  
-            BOOST\["Boost-конвертор\<br\>(DC-DC 3.7V \-\> 3.3V)"\]  
-            USB\["USB-C (встроенный)"\]  
-            Board\_Btns\["Кнопки (RST/BOOT, встр.)"\]  
-            LED\["LED (встроенный, напр. Neopixel)"\]  
+            ESP32["ESP32-S3"]  
+            TP4056["Модуль зарядки\<br\>(TP4056)"]  
+            BOOST["Boost-конвертор\<br\>(DC-DC 3.7V \-\> 3.3V)"]  
+            USB["USB-C (встроенный)"]  
+            Board\_Btns["Кнопки (RST/BOOT, встр.)"]  
+            LED["LED (встроенный, напр. Neopixel)"]  
         end  
           
-        BAT\["Аккумулятор (LiPo 3.7V)"\]  
-        SENS\["Сенсоры (Емкостные пины)"\]  
-        PSW\["Кнопка питания (Вкл/Выкл)"\]
+        BAT["Аккумулятор (LiPo 3.7V)"]  
+        SENS["Сенсоры (Емкостные пины)"]  
+        PSW["Кнопка питания (Вкл/Выкл)"]
 
         USB \-- "Питание (5V)" \--\> TP4056  
         USB \-- "Данные (D+/D-)" \--\> ESP32  
