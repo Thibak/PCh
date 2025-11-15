@@ -15,7 +15,7 @@
 
 ## **2\. Зависимости (Обновлено)**
 
-* **\#include "hal\_interfaces/i\_hal\_storage.h":** (Критическая) Используется в init() для *однократного* чтения fingering.cfg.  
+* **`#include "hal_interfaces/i_hal_storage.h"`:** (Критическая) Используется в `init()` для *однократного* чтения `fingering.cfg.  
 * **\#include "core/event\_dispatcher.h":** (Критическая) Используется для *подписки* на SENSOR\_MASK\_CHANGED / HALF\_HOLE\_DETECTED и *публикации* NOTE\_PITCH\_SELECTED.  
 * **Концептуальная зависимость:** Логика парсинга в init() основана на структуре, описанной в docs/CONFIG\_SCHEMA.md.  
 * **\#include "diagnostics/logger.h":** Для логирования (LOG\_INFO, LOG\_ERROR).
