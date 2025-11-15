@@ -39,8 +39,9 @@
 * **hal\_power (Интерфейс: i\_hal\_power.h)**  
   * **Назначение:** Управление питанием.  
   * **API (In):** triggerPowerOff(), getBatteryLevel()  
-* **hal\_system (Интерфейс: i\_hal\_system.h)**  
+* **`hal_system` (Интерфейс: `i_hal_system.h`)**
   * **Назначение:** Системные функции (таймеры, перезагрузка).
+  * **API (In):** `getSystemTimestampMs()`, `reboot()`.
 
 ### **Слой APP (Application Layer)**
 
@@ -81,9 +82,10 @@
   * **Назначение:** Менеджер конфигурации.  
   * **Логика:** При старте читает settings.cfg из hal\_storage. Парсит и хранит настройки в RAM.  
   * **API (In):** getLogLevel(), getPhysicalPins(), getMuteSensorId(), getHoleSensorIds(), getMuteThreshold(), getVibratoThreshold(), getHalfHoleThreshold().  
-* **diagnostics & logging:**  
-  * **Назначение:** Служба сбора логов.  
-  * **Логика:** Принимает логи от всех модулей. Проверяет core/config\_manager-\>getLogLevel(). Если уровень достаточный, форматирует и направляет лог в hal\_usb-\>serialPrint(...).
+* **`diagnostics & logging`:**
+  * **Назначение:** Служба сбора логов.
+  * **Зависимости:** `core/config_manager`, `i_hal_usb`, `i_hal_system`.
+  * **Логика:** Принимает логи от всех модулей. Проверяет `core/config_manager->getLogLevel()`. Если уровень достаточный, запрашивает `i_hal_system->getSystemTimestampMs()`, форматирует строку и направляет лог в `hal_usb->serialPrint(...)`.
 
 ## **3\. Реализация ключевых сценариев (PRD)**
 
@@ -118,7 +120,7 @@
 3. Модули app/\* и hal/\* вызывают LOG\_INFO(...).  
 4. Служба **diagnostics & logging** (Задача) получает лог.  
 5. Она запрашивает core/config\_manager-\>getLogLevel() (который был загружен из settings.cfg).  
-6. Если уровень лога (INFO) выше или равен уровню в конфиге (DEBUG или INFO), служба форматирует лог (согласно Разделу 4\) и вызывает i\_hal\_usb-\>serialPrint(logLine).  
+6. Если уровень лога (`INFO`) выше или равен уровню в конфиге (`DEBUG` или `INFO`), служба запрашивает `i_hal_system->getSystemTimestampMs()`, форматирует лог (согласно Разделу 4) и вызывает `i_hal_usb->serialPrint(logLine)`.
 7. **hal\_usb** отправляет строку в COM-порт.
 
 ### **Сценарий 4: Управление LED-индикатором (UX)**
@@ -140,5 +142,5 @@
   * Логи хранятся во временном буфере в RAM (циклический буфер) перед отправкой в hal\_usb.  
   * Уровень логирования (LogLevel) определяется core/config\_manager (из settings.cfg).  
   * **Формат логов:** Cтруктурированный plain text, выводимый в hal\_usb (Serial).  
-  * **Формат:** timestamp \- module \- level \- message (например, 123456 \- app/logic \- INFO \- SensorMaskChanged: 0b1101).  
+  * **Формат:** `timestamp - module - level - message` (например, `123456 - app/logic - INFO - SensorMaskChanged: 0b1101`). `timestamp` предоставляется `i_hal_system`.
   * Реализация форматирования инкапсулируется в службе diagnostics & logging.

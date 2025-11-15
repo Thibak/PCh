@@ -6,21 +6,22 @@
 
 *Цель: Полностью спроектировать и задокументировать весь проект, прежде чем будет написана первая строка кода.*
 
-1. **(+) Спринт 0.1 (Док):** Финализация высокоуровневых документов: PRD.MD, ARCH\_MANIFEST.MD, ARCH\_CONTRACT.MD, HW\_SPEC.md.  
-2. **(+) Спринт 0.2 (Док):** Создание **docs/CONFIG\_SCHEMA.md**. (Ключевой документ: описывает точную структуру settings.cfg и fingering.cfg).  
-3. **(+) Спринт 0.3 (Док):** Создание docs/modules/core\_config\_manager.md.  
-4. **(+) Спринт 0.4 (Док):** Создание docs/modules/core\_event\_dispatcher.md.  
-5. **(+) Спринт 0.5 (Док):** Создание docs/modules/diagnostics\_logging.md.  
-6. **(+) Спринт 0.6 (Док):** Создание docs/modules/core\_scheduler.md.  
-7. **(+) Спринт 0.7 (Док):** Создание docs/modules/hal\_storage.md.  
-8. **(+) Спринт 0.8 (Док):** Создание docs/modules/hal\_usb.md.  
-9. **(+) Спринт 0.9 (Док):** Создание docs/modules/hal\_led.md.  
-10. **(+) Спринт 0.10 (Док):** Создание docs/modules/hal\_ble.md.  
-11. **(+) Спринт 0.11 (Док):** Создание docs/modules/hal\_sensors.md.  
-12. **(+) Спринт 0.12 (Док):** Создание docs/modules/hal\_power.md.  
-13. **(+) Спринт 0.13 (Док):** Создание docs/modules/app\_fingering.md.  
-14. **(+)Спринт 0.14 (Док):** Создание docs/modules/app\_logic.md.  
-15. **(+)Спринт 0.15 (Док):** Создание docs/modules/app\_midi.md.
+1. **(+) Спринт 0.1 (Док):** Финализация высокоуровневых документов: `PRD.MD`, `ARCH_MANIFEST.MD`, `ARCH_CONTRACT.MD`, `HW_SPEC.md`.  
+2. **(+) Спринт 0.2 (Док):** Создание `docs/CONFIG_SCHEMA.md`. (Ключевой документ: описывает точную структуру `settings.cfg` и `fingering.cfg`).  
+3. **(+) Спринт 0.3 (Док):** Создание `docs/modules/core_config_manager.md`.  
+4. **(+) Спринт 0.4 (Док):** Создание `docs/modules/core_event_dispatcher.md`.  
+5. **(+) Спринт 0.5 (Док):** Создание `docs/modules/diagnostics_logging.md`.  
+6. **(+) Спринт 0.6 (Док):** Создание `docs/modules/core_scheduler.md`.  
+7. **(+) Спринт 0.7 (Док):** Создание `docs/modules/hal_storage.md`.  
+8. **(+) Спринт 0.8 (Док):** Создание `docs/modules/hal_usb.md`.  
+9. **(+) Спринт 0.9 (Док):** Создание `docs/modules/hal_led.md`.
+10. **(+) Спринт 0.10 (Док):** Создание `docs/modules/hal_ble.md`.  
+11. **(+) Спринт 0.11 (Док):** Создание `docs/modules/hal_sensors.md`.  
+12. **(+) Спринт 0.12 (Док):** Создание `docs/modules/hal_power.md`.  
+13. **(+) Спринт 0.13 (Док):** Создание `docs/modules/app_fingering.md`.  
+14. **(+) Спринт 0.14 (Док):** Создание `docs/modules/app_logic.md`.  
+15. **(+) Спринт 0.15 (Док):** Создание `docs/modules/app_midi.md`.
+16. **(+) Спринт 0.16 (Док):** Создание `docs/modules/hal_system.md` (для `timestamp`).
 
 **(Результат Эпика 0: Все модули описаны, все контракты определены. Проект "понятен".)**
 

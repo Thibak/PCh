@@ -16,15 +16,15 @@
 ## **2\. Зависимости (Обновлено)**
 
 * **`#include "hal_interfaces/i_hal_storage.h"`:** (Критическая) Используется в `init()` для *однократного* чтения `fingering.cfg.  
-* **\#include "core/event\_dispatcher.h":** (Критическая) Используется для *подписки* на SENSOR\_MASK\_CHANGED / HALF\_HOLE\_DETECTED и *публикации* NOTE\_PITCH\_SELECTED.  
-* **Концептуальная зависимость:** Логика парсинга в init() основана на структуре, описанной в docs/CONFIG\_SCHEMA.md.  
-* **\#include "diagnostics/logger.h":** Для логирования (LOG\_INFO, LOG\_ERROR).
+* **`#include "core/event_dispatcher.h"`:** (Критическая) Используется для *подписки* на `SENSOR_MASK_CHANGED` / `HALF_HOLE_DETECTED` и *публикации* `NOTE_PITCH_SELECTED`.  
+* **Концептуальная зависимость:** Логика парсинга в `init()` основана на структуре, описанной в `docs/CONFIG_SCHEMA.md`.  
+* **`#include "diagnostics/logger.h"`:** Для логирования (`LOG_INFO`, `LOG_ERROR`).
 
 ## **3\. Логика работы**
 
 ### **3.1. Структуры данных (Карта аппликатур)**
 
-Для быстрой трансляции AppFingering будет использовать std::map (или std::unordered\_map для скорости), который загружается в RAM при старте.
+Для быстрой трансляции `AppFingering` будет использовать `std::map` (или `std::unordered_map` для скорости), который загружается в RAM при старте.
 
 ```cpp
 // (Примерная структура данных в AppFingering.cpp)
@@ -46,39 +46,39 @@ struct FingeringRule {
 std::map<uint8_t, FingeringRule> m_fingeringMap;
 ```
 
-### **3.2. Фаза init(IHalStorage\* storage)**
+### **3.2. Фаза `init(IHalStorage* storage)`**
 
-1. Вызывается core/scheduler (Фаза 4).  
-2. AppFingering вызывает storage-\>readFile("/fingering.cfg").  
+1. Вызывается `core/scheduler` (Фаза 4).  
+2. AppFingering вызывает `storage->readFile("/fingering.cfg")`.  
 3. **Сценарий 1 (Успех):** Файл найден.  
-   * Вызывается внутренний метод parseFingeringConfig(fileContent).  
-   * LOG\_INFO(TAG, "Loaded %d fingering rules.", m\_fingeringMap.size()).  
+   * Вызывается внутренний метод `parseFingeringConfig(fileContent)`.  
+   * `LOG_INFO(TAG, "Loaded %d fingering rules.", m_fingeringMap.size())`.  
 4. **Сценарий 2 (Файл не найден):**  
-   * LOG\_ERROR(TAG, "fingering.cfg not found\! No notes will be played.")  
-   * m\_fingeringMap остается пустым.
+   * `LOG_ERROR(TAG, "fingering.cfg not found! No notes will be played.")`  
+   * `m_fingeringMap` остается пустым.
 
 ### **3.3. Внутренний parseFingeringConfig(content)**
 
 1. Идет по content строка за строкой.  
 2. Пропускает пустые строки и строки, начинающиеся с \#.  
-3. Разбивает строку на токены (напр., 0b11111110, 62, 1, 63).  
-4. Парсит MASK (напр., 0b11111110) в uint8\_t mask \= 0xFE;.  
-5. Парсит NOTE (напр., 62\) в int note \= 62;.  
-6. Создает FingeringRule rule; rule.mainNote \= note;.  
+3. Разбивает строку на токены (напр., `0b11111110`, 62, 1, 63).  
+4. Парсит MASK (напр., 0b11111110) в `uint8_t mask = 0xFE`;.  
+5. Парсит NOTE (напр., 62\) в `int note = 62`;.  
+6. Создает `FingeringRule rule; rule.mainNote = note`;.  
 7. Если есть 3-й и 4-й токены (1, 63):  
-   * Парсит int sensorId \= 1;  
-   * Парсит int hhNote \= 63;  
-   * rule.halfHoleRules\[sensorId\] \= hhNote;  
-8. Сохраняет правило: m\_fingeringMap\[mask\] \= rule;  
+   * Парсит `int sensorId = 1`;  
+   * Парсит `int hhNote = 63`;  
+   * `rule.halfHoleRules[sensorId] = hhNote`;  
+8. Сохраняет правило: `m_fingeringMap[mask] = rule`;  
 9. (Повторяет для всех строк)
 
 ### **3.4. Фаза handleEvent(const Event& event)**
 
-1. AppFingering является IEventHandler и получает события от core/event\_dispatcher.  
-2. switch (event.type):  
-   * case EventType::SENSOR\_MASK\_CHANGED:  
-     * m\_currentMask \= event.payload.sensorMask.mask;  
-     * int note \= findNote(m\_currentMask);  
+1. `AppFingering` является `IEventHandler` и получает события от `core/event_dispatcher`.  
+2. `switch (event.type)`:  
+   * `case EventType::SENSOR_MASK_CHANGED`:  
+     * `m_currentMask = event.payload.sensorMask.mask`;  
+     * `int note = findNote(m_currentMask)`;  
      * publishNote(note);  
      * break;  
    * case EventType::HALF\_HOLE\_DETECTED:  

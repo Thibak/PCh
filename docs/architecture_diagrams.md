@@ -228,10 +228,9 @@ sequenceDiagram
 stateDiagram
     direction LR
     [*] --> OPEN
-    [*] --> CLOSED
-
-    note right of OPEN : value < mute_threshold
-    note right of CLOSED : value > mute_threshold
+    
+    OPEN : OPEN<br/>(value < mute_threshold)
+    CLOSED : CLOSED<br/>(value > mute_threshold)
 
     OPEN --> CLOSED : value > mute_threshold
     CLOSED --> OPEN : value < mute_threshold
@@ -245,16 +244,14 @@ stateDiagram
 stateDiagram
     direction LR
     [*] --> OPEN
-    [*] --> HALF_HOLE
-    [*] --> CLOSED
 
-    note right of OPEN : value < half_hole_threshold
-    note right of HALF_HOLE : value > half_hole_threshold<br/>value < hole_closed_threshold
-    note right of CLOSED : value > hole_closed_threshold
+    OPEN : OPEN<br/>(value < half_hole_threshold)
+    HALF_HOLE : HALF_HOLE<br/>(value > half_hole_threshold<br/>&&<br/>value < hole_closed_threshold)
+    CLOSED : CLOSED<br/>(value > hole_closed_threshold)
 
     OPEN --> HALF_HOLE : value > half_hole_threshold
-    HALF_HOLE --> CLOSED : value > hole_closed_threshold
-    
-    CLOSED --> HALF_HOLE : value < hole_closed_threshold
     HALF_HOLE --> OPEN : value < half_hole_threshold
+    
+    HALF_HOLE --> CLOSED : value > hole_closed_threshold
+    CLOSED --> HALF_HOLE : value < hole_closed_threshold
 ```

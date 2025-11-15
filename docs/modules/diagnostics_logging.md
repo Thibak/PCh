@@ -16,7 +16,8 @@
 ## **2\. Зависимости**
 
 * **\#include "core/config\_manager.h":** (Критическая) Используется для получения getLogLevel().  
-* **\#include "hal\_interfaces/i\_hal\_usb.h":** (Критическая) Используется для вывода отформатированной строки.  
+* **\#include "hal\_interfaces/i\_hal\_usb.h":** (Критическая) Используется для вывода отформатированной строки.
+* **`#include "hal_interfaces/i_hal_system.h"`:** (Критическая, Новое) Используется для получения `getSystemTimestampMs()`.
 * **FreeRTOS:** Mutex (для обеспечения потокобезопасности доступа к hal\_usb из разных задач).  
 * **stdarg.h:** Для обработки printf-подобных аргументов в макросах.
 
@@ -40,8 +41,8 @@
 ### **3.2. Логика класса Logger (Singleton)**
 
 1. **Фаза init():**  
-   * Logger (который является синглтоном) получает указатели на ConfigManager и IHalUsb.  
-   * Logger::init(ConfigManager\* cfg, IHalUsb\* usb)  
+   * Logger (который является синглтоном) получает указатели на ConfigManager, IHalUsb и IHalSystem.  
+   * Logger::init(ConfigManager\* cfg, IHalUsb\* usb, IHalSystem\* system)
    * Он сохраняет эти указатели у себя.  
    * Он создает Mutex (мьютекс) FreeRTOS для защиты m\_halUsb от одновременного доступа.  
    * Он получает и кэширует текущий m\_logLevel \= cfg-\>getLogLevel().  
@@ -52,7 +53,7 @@
      1. Метод немедленно проверяет: if (level \< m\_logLevel) return; (Быстрая отсечка, если уровень лога недостаточен).  
      2. **Захват Mutex:** xSemaphoreTake(m\_logMutex, portMAX\_DELAY). (Теперь только этот поток может выводить в USB).  
      3. Форматирует строку message (напр. "Mask changed: 0b1101") с помощью vsnprintf.  
-     4. Форматирует финальную строку вывода logLine согласно ARCH\_CONTRACT.MD 4.1:  
+     4. Форматирует финальную строку вывода logLine (используя ts) согласно ARCH\_CONTRACT.MD 4.1:  
         * \[timestamp\] \- \[TAG\] \- \[Level\] \- \[message\]  
         * (напр. 12345 \- app/logic \- INFO \- Mask changed: 0b1101)  
      5. Вызывает m\_halUsb-\>serialPrint(logLine).  
@@ -60,45 +61,48 @@
 
 ## **4\. Публичный API (C++ Header)**
 
-\#pragma once
+```cpp
+#pragma once
 
-\#include "core/config\_manager.h"  
-\#include "hal\_interfaces/i\_hal\_usb.h"  
-\#include "LogLevel.h"  
-\#include "freertos/FreeRTOS.h"  
-\#include "freertos/semphr.h" // Для Mutex
+#include "core/config_manager.h"  
+#include "hal_interfaces/i_hal_usb.h"  
+#include "LogLevel.h"  
+#include "freertos/FreeRTOS.h"  
+#include "freertos/semphr.h" // Для Mutex
 
 class Logger {  
 public:  
-    /\*\*  
-     \* @brief Получение единственного экземпляра (Singleton).  
-     \*/  
-    static Logger\* getInstance();
+    /**  
+     * @brief Получение единственного экземпляра (Singleton).  
+     */  
+    static Logger* getInstance();
 
-    /\*\*  
-     \* @brief Инициализация логгера.  
-     \*/  
-    void init(ConfigManager\* configManager, IHalUsb\* halUsb);
+/**
+     * @brief Инициализация логгера. (Обновлено)
+     */
+    void init(ConfigManager* configManager, IHalUsb* halUsb, IHalSystem* halSystem);
 
-    /\*\*  
-     \* @brief Основной метод логирования (обычно вызывается через макросы).  
-     \*/  
-    void log(LogLevel level, const char\* tag, const char\* format, ...);
+    /**  
+     * @brief Основной метод логирования (обычно вызывается через макросы).  
+     */  
+    void log(LogLevel level, const char* tag, const char* format, ...);
 
 private:  
     Logger(); // Приватный конструктор  
-    \~Logger(); // Приватный деструктор
+    ~Logger(); // Приватный деструктор
 
-    static Logger\* m\_instance;  
-    ConfigManager\* m\_configManager;  
-    IHalUsb\* m\_halUsb;
+    static Logger* m_instance;  
+    ConfigManager* m_configManager;  
+    IHalUsb* m_halUsb;
+    IHalSystem* m_halSystem;
 
-    LogLevel m\_logLevel;  
-    SemaphoreHandle\_t m\_logMutex; // Mutex для защиты m\_halUsb  
+    LogLevel m_logLevel;  
+    SemaphoreHandle_t m_logMutex; // Mutex для защиты m_halUsb  
 };
 
 // \--- Глобальные Макросы \---  
 // (см. Раздел 3.1)
+```
 
 ## **5\. Тестирование (Host-First)**
 
