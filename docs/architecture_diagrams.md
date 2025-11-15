@@ -67,14 +67,14 @@ graph TD
     CORE_Config -->|Вызовы API| HAL_Storage  
     CORE_Scheduler -->|Вызовы API| HAL_Power  
       
-    classDef hal fill:\#DDEBF7,stroke:\#333  
-    classDef app fill:\#E2F0D9,stroke:\#333  
-    classDef core fill:\#FFF2CC,stroke:\#333  
-    classDef hw fill:\#FBE5D6,stroke:\#333  
+    classDef hal fill:#DDEBF7,stroke:#333  
+    classDef app fill:#E2F0D9,stroke:#333  
+    classDef core fill:#FFF2CC,stroke:#333  
+    classDef hw fill:#FBE5D6,stroke:#333  
       
-    class HAL_Sensors,HAL_LED,HAL_BLE,HAL_USB,HAL_Storage,HAL_Power hal  
-    class APP_Logic,APP_Fingering,APP_Midi app  
-    class CORE_Event,CORE_Config,CORE_Log,CORE_Scheduler core  
+    class HAL_Sensors,HAL_LED,HAL_BLE,HAL_USB,HAL_Storage,HAL_Power hal
+    class APP_Logic,APP_Fingering,APP_Midi app
+    class CORE_Event,CORE_Config,CORE_Log,CORE_Scheduler core
     class Sensors,LED,BLE_HW,USB_HW,PSW hw
 ```
 ## **2\. Диаграммы последовательности (Sequence Diagrams)**
