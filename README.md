@@ -33,7 +33,7 @@
 ### **2.2. План и Визуализация**
 
 * [**DEVELOPMENT\_PLAN.MD**](./docs/DEVELOPMENT_PLAN.MD): **"КОГДА?"** — Полный план разработки, разбитый по Эпикам и Спринтам.  
-* [**docs/architecture\_diagrams.md**](/docs/architecture_diagrams.MD): **"ВИЗУАЛИЗАЦИЯ"** — Диаграммы Mermaid (компонентная, последовательности) для ARCH\_CONTRACT.MD.  
+* [**docs/architecture\_diagrams.md**](/docs/architecture_diagrams.md): **"ВИЗУАЛИЗАЦИЯ"** — Диаграммы Mermaid (компонентная, последовательности) для ARCH\_CONTRACT.MD.  
 * [**docs/HW\_SPEC.md**](./docs/HW_SPEC.md): **"ЖЕЛЕЗО"** — Спецификация оборудования и физический Pinout Blueprint.
 
 ### **2.3. Схемы Данных (Контракты Данных)**
