@@ -13,7 +13,7 @@ ConfigManager — это **центральный поставщик** наст�
 ## **2\. Зависимости**
 
 * **\#include "i\_hal\_storage.h":** Используется во время init() для чтения файла settings.cfg.  
-* **\#include "docs/CONFIG\_SCHEMA.md" (Концептуальная):** Логика парсинга в init() основана на структуре settings.cfg, описанной в этом документе.
+* **Концептуальная зависимость:** Логика парсинга в init() основана на структуре, описанной в docs/CONFIG\_SCHEMA.md.
 
 ## **3\. Логика работы**
 
@@ -24,7 +24,7 @@ ConfigManager — это **центральный поставщик** наст�
 3. ConfigManager вызывает storage-\>readFile("/settings.cfg").  
 4. **Сценарий 1 (Успех):** Файл найден.  
    * ConfigManager построчно парсит INI-подобный текст.  
-   * Он распознает секции \[system\], \[sensors\] и т.д.  
+   * Он распознает секции \[system\], \[led\], \[sensors\] и т.д.  
    * Он преобразует строковые значения ("INFO", "50", "T1,T2,T3") в их *типы* (enum, int, std::vector\<string\>) и сохраняет в приватных полях.  
    * **Пример парсинга hole\_sensor\_ids:** hole\_sensor\_ids \= 0,1,2,3,4,5,6,7 будет прочитано, разделено по запятой и сохранено как std::vector\<int\>{0, 1, 2, 3, 4, 5, 6, 7}.  
 5. **Сценарий 2 (Файл не найден):**  
@@ -37,7 +37,7 @@ ConfigManager — это **центральный поставщик** наст�
 
 После init() модуль не выполняет активных действий, а только отвечает на вызовы API (геттеры).
 
-## **4\. Публичный API (C++ Header) (Обновлено)**
+## **4\. Публичный API (C++ Header)** 
 
 \#pragma once
 
@@ -60,12 +60,18 @@ public:
     // \--- \[system\] \---  
     LogLevel getLogLevel() const;  
     int getAutoOffTimeMin() const;  
-    std::string getLedPin() const; // \<-- (Новый)
+    std::string getLedPin() const;
+
+    // \--- \[led\] \---  
+    int getLedBlinkDurationMs() const;  
+    int getLedBlinkPauseMs() const;
 
     // \--- \[sensors\] \---  
     const std::vector\<std::string\>& getPhysicalPins() const;  
     int getSampleRateHz() const;  
-    int getMuteThreshold() const;
+    float getFilterAlpha() const;  
+    int getMuteThreshold() const;  
+    int getHoleClosedThreshold() const; // \<-- (Новый)
 
     // \--- \[app\_logic\] \---  
     int getMuteSensorId() const;  
@@ -91,10 +97,16 @@ private:
     // Приватные поля для хранения распарсенных значений  
     LogLevel m\_logLevel;  
     int m\_autoOffTimeMin;  
-    std::string m\_ledPin; // \<-- (Новый)  
+    std::string m\_ledPin;  
+      
+    int m\_ledBlinkDurationMs;  
+    int m\_ledBlinkPauseMs;
+
     std::vector\<std::string\> m\_physicalPins;  
     int m\_sampleRateHz;  
+    float m\_filterAlpha;  
     int m\_muteThreshold;  
+    int m\_holeClosedThreshold; // \<-- (Новый)  
     int m\_muteSensorId;  
     std::vector\<int\> m\_holeSensorIds;  
     float m\_vibratoFreqMin;  
@@ -110,8 +122,8 @@ private:
   1. **Сценарий 1 (Успех):**  
      * MockHalStorage возвращает тестовый settings.cfg.  
      * Тест вызывает init().  
-     * Тест проверяет, что getLogLevel() возвращает LogLevel::INFO, getHoleSensorIds() возвращает \[0, 1, 2, ...\] и т.д.  
+     * Тест проверяет, что getLogLevel() возвращает LogLevel::INFO, getHoleClosedThreshold() возвращает 400, и т.д.  
   2. **Сценарий 2 (Файл не найден):**  
      * MockHalStorage возвращает false (ошибка чтения).  
      * Тест вызывает init().  
-     * Тест проверяет, что getLogLevel() возвращает LogLevel::WARN (значение по умолчанию).
+     * Тест проверяет, что getLogLevel() возвращает LogLevel::WARN (default) и getHoleClosedThreshold() возвращает 400 (default).

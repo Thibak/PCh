@@ -33,12 +33,12 @@
 ### **2.2. План и Визуализация**
 
 * [**DEVELOPMENT\_PLAN.MD**](./docs/DEVELOPMENT_PLAN.MD): **"КОГДА?"** — Полный план разработки, разбитый по Эпикам и Спринтам.  
-* [**docs/architecture\_diagrams.md**](/docs/architecture_diagrams.md): **"ВИЗУАЛИЗАЦИЯ"** — Диаграммы Mermaid (компонентная, последовательности) для ARCH\_CONTRACT.MD.  
+* [**docs/architecture\_diagrams.md**](./docs/architecture_diagrams.md): **"ВИЗУАЛИЗАЦИЯ"** — Диаграммы Mermaid (компонентная, последовательности) для ARCH\_CONTRACT.MD.  
 * [**docs/HW\_SPEC.md**](./docs/HW_SPEC.md): **"ЖЕЛЕЗО"** — Спецификация оборудования и физический Pinout Blueprint.
 
 ### **2.3. Схемы Данных (Контракты Данных)**
 
-* [**docs/CONFIG\_SCHEMA.md**](/docs/CONFIG_SCHEMA.md): **(Критически важно)** — Детальное описание синтаксиса, секций и ключей для settings.cfg и fingering.cfg.
+* [**docs/CONFIG\_SCHEMA.md**](./docs/CONFIG_SCHEMA.md): **(Критически важно)** — Детальное описание синтаксиса, секций и ключей для settings.cfg и fingering.cfg.
 
 ### **2.4. Детальное проектирование: CORE (Сервисы)**
 
@@ -58,7 +58,7 @@
 
 ### **2.6. Детальное проектирование: APP (Бизнес-Логика)**
 
-* **(Предстоит) docs/modules/app\_fingering.md**: (Парсер fingering.cfg и транслятор "Маска \-\> Нота").  
+* [**docs/modules/app\_fingering.md**](./docs/modules/app_fingering.md): (Парсер fingering.cfg и транслятор "Маска \-\> Нота").  
 * **(Предстоит) docs/modules/app\_logic.md**: ("Мозг" устройства. Детектор маски, Mute, жесты).  
 * **(Предстоит) docs/modules/app\_midi.md**: (Формирователь MIDI-сообщений: NoteOn, PitchBend, AllNotesOff).
 

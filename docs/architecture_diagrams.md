@@ -144,7 +144,7 @@ sequenceDiagram
         end  
     end
 ```
-## **3\. Диаграмма физической компоновки (C4 \- Уровень 1\) \- (Обновлено)**
+## **3\. Диаграмма физической компоновки (C4 \- Уровень 1\)**
 
 Эта диаграмма показывает физические компоненты устройства и их взаимосвязи, учитывая использование встроенных компонентов платы ESP32-S3.
 ```mermaid
@@ -184,6 +184,7 @@ graph TD
 ## **4\. Диаграмма управления LED (Сценарий 4\)**
 
 Эта диаграмма показывает, как разные модули управляют состоянием одного светодиода.
+
 ```mermaid
 sequenceDiagram  
     participant BLE as "hal_ble"  
@@ -214,4 +215,56 @@ sequenceDiagram
     %% Сценарий отключения  
     BLE->>LED: API: setMode(FAST_BLINK)  
     note right of BLE: Соединение потеряно
+```
+## **5\. Диаграммы состояний сенсоров (Sensor State Machines)**
+
+Эти диаграммы визуализируют логику порогов, описанную в docs/CONFIG_SCHEMA.md и реализуемую в docs/modules/app_logic.md.
+
+### **5\.1\. Сенсор Mute (2-х позиционный)**
+
+Этот сенсор (mute_sensor_id) имеет 2 состояния, разделенных одним порогом mute_threshold.
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> OPEN
+    
+    state OPEN {
+        description: value < mute_threshold
+    }
+    
+    state CLOSED {
+        description: value > mute_threshold
+    }
+
+    OPEN --> CLOSED: value > mute_threshold
+    CLOSED --> OPEN: value < mute_threshold
+```
+
+### **5\.2\. Игровой сенсор (3-х позиционный)**
+
+Все игровые сенсоры (hole_sensor_ids) имеют 3 состояния, разделенных двумя порогами.
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> OPEN
+
+    state OPEN {
+        description: value < half_hole_threshold
+    }
+    
+    state HALF_HOLE {
+        description: value > half_hole_threshold<br/>value < hole_closed_threshold
+    }
+    
+    state CLOSED {
+        description: value > hole_closed_threshold
+    }
+
+    OPEN --> HALF_HOLE: value > half_hole_threshold
+    HALF_HOLE --> CLOSED: value > hole_closed_threshold
+    
+    CLOSED --> HALF_HOLE: value < hole_closed_threshold
+    HALF_HOLE --> OPEN: value < half_hole_threshold
 ```

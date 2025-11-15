@@ -28,6 +28,7 @@
 | sample\_rate\_hz | int | 50 | Частота (Hz) генерации событий SensorValueChanged. |
 | filter\_alpha | float | 0.1 | **(Новое)** Коэффициент EMA-сглаживания (0.0-1.0). 0.1 \= сильное сглаживание, 1.0 \= нет сглаживания. |
 | mute\_threshold | int | 500 | Порог срабытывания для сенсора, назначенного mute\_sensor\_id. |
+| hole\_closed\_threshold | int | 400 | Порог "полностью закрытого" отверстия. app/logic использует это для построения 8-битной маски. (См. Диаграмму 3-х позиционного сенсора). |
 
 ### **1.3. Секция \[app\_logic\]**
 
@@ -46,6 +47,7 @@
 | vibrato\_freq\_max\_hz | float | 6.0 | Максимальная частота (Hz) для детекции вибрато. |
 | vibrato\_amplitude\_min | int | 50 | Минимальная амплитуда для детекции вибрато (отсечка шума). |
 | half\_hole\_threshold | int | 300 | Порог срабатывания "полузакрытия". |
+| half\_hole\_threshold | int | 300 | Порог срабатывания "полузакрытия". Должен быть ниже, чем hole_closed_threshold. (См. Диаграмму 3-х позиционного сенсора). |
 
 ### **1.5. Пример settings.cfg (Обновлено)**
 
@@ -64,6 +66,7 @@ physical\_pins \= T1, T2, T3, T4, T5, T6, T7, T8, T9
 sample\_rate\_hz \= 50  
 filter\_alpha \= 0.1 \# Коэффициент сглаживания (0.1 \= сильно, 1.0 \= нет)  
 mute\_threshold \= 500
+hole_closed_threshold \= 400 \# Порог для "закрыто" (для маски)
 
 \# \--- Настройки "Мозга" (app/logic) \---  
 \# Указывает "мозгу", как использовать логические ID из \[sensors\]  
@@ -79,6 +82,7 @@ vibrato\_freq\_min\_hz \= 2.0
 vibrato\_freq\_max\_hz \= 6.0  
 vibrato\_amplitude\_min \= 50  
 half\_hole\_threshold \= 300
+half_hole_threshold \= 300 \# Порог для "полузакрыто" \(должен быть \< hole_closed_threshold\)
 
 ## **2\. Файл fingering.cfg**
 
