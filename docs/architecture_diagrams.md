@@ -82,7 +82,7 @@ graph TD
 ### **Сценарий 1: Основной сценарий (BLE MIDI) \- (Обновлено)**
 
 Эта диаграмма показывает "горячий путь" (hot path) и параллельную обработку "сенсора звука".
-
+```mermaid
 sequenceDiagram  
     participant S as "hal_sensors"  
     participant E as "core/event_dispatcher"  
@@ -92,34 +92,34 @@ sequenceDiagram
     participant B as "hal_ble"  
     participant D as "hal_led"
 
-    S-\>\>E: Событие: SensorValueChanged(id, raw_value)  
-    E-\>\>L: SensorValueChanged(id, raw_value)
+    S->>E: Событие: SensorValueChanged(id, raw_value)  
+    E->>L: SensorValueChanged(id, raw_value)
 
     par Основной поток (Ноты)  
-        L-\>\>L: Анализ (Нажатие? Полузакрытие?)  
-        L-\>\>E: Событие: SensorMaskChanged  
-        E-\>\>F: SensorMaskChanged  
-        F--\>\>F: Поиск ноты в fingering.cfg  
-        F-\>\>E: Событие: NotePitchSelected(NoteOn)  
-        E-\>\>M: NotePitchSelected  
-        M-\>\>B: API: sendMidiMessage(NoteOn)  
-        M-\>\>D: API: setMode(BLINK_ONCE)  
+        L->>L: Анализ (Нажатие? Полузакрытие?)  
+        L->>E: Событие: SensorMaskChanged  
+        E->>F: SensorMaskChanged  
+        F-->>F: Поиск ноты в fingering.cfg  
+        F->>E: Событие: NotePitchSelected(NoteOn)  
+        E->>M: NotePitchSelected  
+        M->>B: API: sendMidiMessage(NoteOn)  
+        M->>D: API: setMode(BLINK_ONCE)  
     and Поток жестов (Вибрато)  
-        L-\>\>L: Анализ (Вибрато?)  
-        L-\>\>E: Событие: VibratoDetected  
-        E-\>\>M: VibratoDetected  
-        M-\>\>B: API: sendMidiMessage(PitchBend)  
+        L->>L: Анализ (Вибрато?)  
+        L->>E: Событие: VibratoDetected  
+        E->>M: VibratoDetected  
+        M->>B: API: sendMidiMessage(PitchBend)  
     and Поток "Сенсора Звука" (Mute)  
-        L-\>\>L: Анализ (Mute?)  
-        L-\>\>E: Событие: MuteEnabled  
-        E-\>\>M: MuteEnabled  
-        M-\>\>B: API: sendMidiMessage(AllNotesOff)  
+        L->>L: Анализ (Mute?)  
+        L->>E: Событие: MuteEnabled  
+        E->>M: MuteEnabled  
+        M->>B: API: sendMidiMessage(AllNotesOff)  
     end
-
+```
 ### **Сценарий 2 и 3: Композитное USB (Конфигурация и Логирование)**
 
 Эта диаграмма показывает *одновременную* работу двух функций композитного USB-устройства.
-
+```mermaid
 sequenceDiagram  
     participant User as "Пользователь (ПК)"  
     participant USB as "hal_usb"  
@@ -129,25 +129,25 @@ sequenceDiagram
     participant APP as "app/module"
 
     par Редактирование конфига (Mass Storage)  
-        User-\>\>USB: Чтение файла settings.cfg  
-        USB-\>\>FS: API: readFile("settings.cfg")  
-        FS--\>\>USB: (данные файла)  
-        USB--\>\>User: (данные файла)  
+        User->>USB: Чтение файла settings.cfg  
+        USB->>FS: API: readFile("settings.cfg")  
+        FS-->>USB: (данные файла)  
+        USB-->>User: (данные файла)  
     and Чтение логов (Serial CDC)  
-        APP-\>\>LOG: LOG_INFO("Сообщение...")  
-        LOG-\>\>CFG: API: getLogLevel()  
-        CFG--\>\>LOG: "INFO"  
+        APP->>LOG: LOG_INFO("Сообщение...")  
+        LOG->>CFG: API: getLogLevel()  
+        CFG-->>LOG: "INFO"  
         opt Уровень лога соответствует  
-            LOG-\>\>LOG: formatLine(...)  
-            LOG-\>\>USB: API: serialPrint("ts \- app \- INFO \- ...")  
-            USB--\>\>User: (поток текста в Serial)  
+            LOG->>LOG: formatLine(...)  
+            LOG->>USB: API: serialPrint("ts \- app \- INFO \- ...")  
+            USB-->>User: (поток текста в Serial)  
         end  
     end
-
+```
 ## **3\. Диаграмма физической компоновки (C4 \- Уровень 1\) \- (Обновлено)**
 
 Эта диаграмма показывает физические компоненты устройства и их взаимосвязи, учитывая использование встроенных компонентов платы ESP32-S3.
-
+```mermaid
 graph TD  
     subgraph "Корпус устройства"  
         subgraph "Плата разработки (Dev Board)"  
@@ -163,55 +163,55 @@ graph TD
         SENS["Сенсоры (Емкостные пины)"]  
         PSW["Кнопка питания (Вкл/Выкл)"]
 
-        USB \-- "Питание (5V)" --> TP4056  
-        USB \-- "Данные (D+/D-)" --> ESP32  
-        TP4056 \-- "Зарядка" --> BAT  
-        BAT \-- "Питание (3.7V)" --> BOOST  
-        BOOST \-- "Стаб. VCC (3.3V)" --> ESP32  
-        BOOST \-- "Стаб. VCC (3.3V)" --> SENS  
-        SENS \-- "Данные (Touch Pins)" --> ESP32  
-        LED \-- "Управление" --> ESP32  
-        Board_Btns \-- "Управление" --> ESP32  
-        PSW \-- "Вкл/Выкл (Soft Latch)" --> BOOST  
+        USB -- "Питание (5V)" --> TP4056  
+        USB -- "Данные (D+/D-)" --> ESP32  
+        TP4056 -- "Зарядка" --> BAT  
+        BAT -- "Питание (3.7V)" --> BOOST  
+        BOOST -- "Стаб. VCC (3.3V)" --> ESP32  
+        BOOST -- "Стаб. VCC (3.3V)" --> SENS  
+        SENS -- "Данные (Touch Pins)" --> ESP32  
+        LED -- "Управление" --> ESP32  
+        Board_Btns -- "Управление" --> ESP32  
+        PSW -- "Вкл/Выкл (Soft Latch)" --> BOOST  
     end  
       
-    classDef pcb fill:\#DDEBF7,stroke:\#333  
-    classDef ext fill:\#E2F0D9,stroke:\#333  
+    classDef pcb fill:#DDEBF7,stroke:#333  
+    classDef ext fill:#E2F0D9,stroke:#333  
       
     class ESP32,TP4056,BOOST,USB,Board_Btns,LED pcb  
     class BAT,SENS,PSW ext
-
+```
 ## **4\. Диаграмма управления LED (Сценарий 4\) \- (Исправлено)**
 
 Эта диаграмма показывает, как разные модули управляют состоянием одного светодиода.
-
+```mermaid
 sequenceDiagram  
     participant BLE as "hal_ble"  
     participant MIDI as "app/midi"  
     participant LED as "hal_led"
 
     %% Сценарий подключения  
-    BLE-\>\>LED: API: setMode(FAST_BLINK)  
+    BLE->>LED: API: setMode(FAST_BLINK)  
     note right of BLE: Инициализация, поиск...  
       
-    rect rgb(240, 240, 240\)  
+    rect rgb(240, 240, 240)  
         note over BLE,LED: ...проходит время...  
     end  
       
-    BLE-\>\>LED: API: setMode(SOLID)  
+    BLE->>LED: API: setMode(SOLID)  
     note right of BLE: Устройство подключено
 
     %% Сценарий отправки MIDI (во время SOLID)  
-    MIDI-\>\>LED: API: setMode(BLINK_ONCE)  
-    note left of LED: LED моргает 1 раз и \<br/\>возвращается в SOLID  
+    MIDI->>LED: API: setMode(BLINK_ONCE)  
+    note left of LED: LED моргает 1 раз и \nвозвращается в SOLID  
       
-    rect rgb(240, 240, 240\)  
+    rect rgb(240, 240, 240)  
         note over MIDI,LED: ...проходит время, игра...  
     end  
       
-    MIDI-\>\>LED: API: setMode(BLINK_ONCE)  
+    MIDI->>LED: API: setMode(BLINK_ONCE)  
       
     %% Сценарий отключения  
-    BLE-\>\>LED: API: setMode(FAST_BLINK)  
+    BLE->>LED: API: setMode(FAST_BLINK)  
     note right of BLE: Соединение потеряно
-
+```
