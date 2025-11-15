@@ -5,7 +5,7 @@
 ## **1\. Компонентная диаграмма (C4 \- Уровень 3\)**
 
 Эта диаграмма показывает основные модули (HAL, APP, CORE) и их ключевые зависимости.
-
+```mermaid
 graph TD  
     subgraph "Hardware (Физический уровень)"  
         direction LR  
@@ -76,7 +76,7 @@ graph TD
     class APP\_Logic,APP\_Fingering,APP\_Midi app  
     class CORE\_Event,CORE\_Config,CORE\_Log,CORE\_Scheduler core  
     class Sensors,LED,BLE\_HW,USB\_HW,PSW hw
-
+```
 ## **2\. Диаграммы последовательности (Sequence Diagrams)**
 
 ### **Сценарий 1: Основной сценарий (BLE MIDI) \- (Обновлено)**
