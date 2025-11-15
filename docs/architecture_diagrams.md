@@ -178,7 +178,7 @@ graph TD
     classDef pcb fill:#DDEBF7,stroke:#333  
     classDef ext fill:#E2F0D9,stroke:#333  
       
-    class ESP32,TP4056,BOOST,USB,Board_Btns,LED pcb  
+    class ESP32,TP4056,BOOST,USB,Board_Btns,LED pcb
     class BAT,SENS,PSW ext
 ```
 ## **4\. Диаграмма управления LED (Сценарий 4\) \- (Исправлено)**
