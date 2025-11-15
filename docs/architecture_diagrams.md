@@ -60,7 +60,7 @@ graph TD
     HAL_Power --> PSW  
       
     HAL_USB --> USB_HW  
-    HAL_Storage \-.-\>|Доступ к FS| HAL_USB  
+    HAL_Storage -.->|Доступ к FS| HAL_USB  
     CORE_Log -->|Вызовы API| HAL_USB
 
     %% Связи CORE  
