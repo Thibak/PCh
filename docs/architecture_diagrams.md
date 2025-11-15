@@ -67,11 +67,11 @@ graph TD
     CORE_Config -->|Вызовы API| HAL_Storage  
     CORE_Scheduler -->|Вызовы API| HAL_Power  
       
-    classDef hal fill:#DDEBF7,stroke:#333  
-    classDef app fill:#E2F0D9,stroke:#333  
-    classDef core fill:#FFF2CC,stroke:#333  
-    classDef hw fill:#FBE5D6,stroke:#333  
-      
+    classDef hal fill:#2E3C5D,stroke:#BBB,color:#FFF
+    classDef app fill:#3C5D3C,stroke:#BBB,color:#FFF
+    classDef core fill:#5D4C2E,stroke:#BBB,color:#FFF
+    classDef hw fill:#5D2E2E,stroke:#BBB,color:#FFF
+        
     class HAL_Sensors,HAL_LED,HAL_BLE,HAL_USB,HAL_Storage,HAL_Power hal
     class APP_Logic,APP_Fingering,APP_Midi app
     class CORE_Event,CORE_Config,CORE_Log,CORE_Scheduler core
@@ -79,7 +79,7 @@ graph TD
 ```
 ## **2\. Диаграммы последовательности (Sequence Diagrams)**
 
-### **Сценарий 1: Основной сценарий (BLE MIDI) \- (Обновлено)**
+### **Сценарий 1: Основной сценарий (BLE MIDI)**
 
 Эта диаграмма показывает "горячий путь" (hot path) и параллельную обработку "сенсора звука".
 ```mermaid
@@ -139,7 +139,7 @@ sequenceDiagram
         CFG-->>LOG: "INFO"  
         opt Уровень лога соответствует  
             LOG->>LOG: formatLine(...)  
-            LOG->>USB: API: serialPrint("ts \- app \- INFO \- ...")  
+            LOG->>USB: API: serialPrint("ts - app - INFO - ...")  
             USB-->>User: (поток текста в Serial)  
         end  
     end
@@ -175,13 +175,13 @@ graph TD
         PSW -- "Вкл/Выкл (Soft Latch)" --> BOOST  
     end  
       
-    classDef pcb fill:#DDEBF7,stroke:#333  
-    classDef ext fill:#E2F0D9,stroke:#333  
+    classDef pcb fill:#2E3C5D,stroke:#BBB,color:#FFF
+    classDef ext fill:#3C5D3C,stroke:#BBB,color:#FFF
       
     class ESP32,TP4056,BOOST,USB,Board_Btns,LED pcb
     class BAT,SENS,PSW ext
 ```
-## **4\. Диаграмма управления LED (Сценарий 4\) \- (Исправлено)**
+## **4\. Диаграмма управления LED (Сценарий 4\)**
 
 Эта диаграмма показывает, как разные модули управляют состоянием одного светодиода.
 ```mermaid
