@@ -38,7 +38,7 @@
 
 ### **2.3. Схемы Данных (Контракты Данных)**
 
-* [**docs/CONFIG\_SCHEMA.md**](./docs/CONFIG_SCHEMA.md): **(Критически важно)** — Детальное описание синтаксиса, секций и ключей для settings.cfg и fingering.cfg.
+* [**docs/CONFIG\_SCHEMA.md**](/docs/CONFIG_SCHEMA.md): **(Критически важно)** — Детальное описание синтаксиса, секций и ключей для settings.cfg и fingering.cfg.
 
 ### **2.4. Детальное проектирование: CORE (Сервисы)**
 
