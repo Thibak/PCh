@@ -9,11 +9,11 @@
 graph TD  
     subgraph "Hardware (Физический уровень)"  
         direction LR  
-        Sensors[Сенсоры (Touch Pins)]  
-        LED[LED (встроенный)]  
+        Sensors["Сенсоры (Touch Pins)"]  
+        LED["LED (встроенный)"]  
         BLE\_HW[BLE Радио]  
-        USB\_HW[USB-C (встроенный)]  
-        PSW[Кнопка питания (внешняя)]  
+        USB\_HW["USB-C (встроенный)"]  
+        PSW["Кнопка питания (внешняя)"]  
     end
 
     subgraph "Application Layer (app/)"  
