@@ -1,6 +1,6 @@
 # **Архитектурные диаграммы**
 
-**Назначение документа:** \> Этот документ визуализирует архитектурные решения, описанные в ARCH\_CONTRACT.MD, с использованием диаграмм Mermaid. Он служит для наглядного представления статической структуры и динамического взаимодействия модулей.
+**Назначение документа:** \> Этот документ визуализирует архитектурные решения, описанные в ARCH_CONTRACT.MD, с использованием диаграмм Mermaid. Он служит для наглядного представления статической структуры и динамического взаимодействия модулей.
 
 ## **1\. Компонентная диаграмма (C4 \- Уровень 3\)**
 
@@ -11,71 +11,71 @@ graph TD
         direction LR  
         Sensors["Сенсоры (Touch Pins)"]  
         LED["LED (встроенный)"]  
-        BLE\_HW[BLE Радио]  
-        USB\_HW["USB-C (встроенный)"]  
+        BLE_HW[BLE Радио]  
+        USB_HW["USB-C (встроенный)"]  
         PSW["Кнопка питания (внешняя)"]  
     end
 
     subgraph "Application Layer (app/)"  
         direction TB  
-        APP\_Logic["app/logic\<br\>(Интерпретатор)"]  
-        APP\_Fingering["app/fingering\<br\>(Транслятор аппликатуры)"]  
-        APP\_Midi["app/midi\<br\>(Формирователь MIDI)"]  
+        APP_Logic["app/logic\n(Интерпретатор)"]  
+        APP_Fingering["app/fingering\n(Транслятор аппликатуры)"]  
+        APP_Midi["app/midi\n(Формирователь MIDI)"]  
     end
 
     subgraph "HAL (hal/)"  
         direction TB  
-        HAL\_Sensors["hal\_sensors\<br\>(i\_hal\_sensor.h)"]  
-        HAL\_LED["hal\_led\<br\>(i\_hal\_led.h)"]  
-        HAL\_BLE["hal\_ble\<br\>(i\_hal\_ble.h)"]  
-        HAL\_USB["hal\_usb\<br\>(i\_hal\_usb.h)"]  
-        HAL\_Storage["hal\_storage\<br\>(i\_hal\_storage.h)"]  
-        HAL\_Power["hal\_power\<br\>(i\_hal\_power.h)"]  
+        HAL_Sensors["hal_sensors\n(i_hal_sensor.h)"]  
+        HAL_LED["hal_led\n(i_hal_led.h)"]  
+        HAL_BLE["hal_ble\n(i_hal_ble.h)"]  
+        HAL_USB["hal_usb\n(i_hal_usb.h)"]  
+        HAL_Storage["hal_storage\n(i_hal_storage.h)"]  
+        HAL_Power["hal_power\n(i_hal_power.h)"]  
     end
 
     subgraph "CORE (core/)"  
         direction TB  
-        CORE\_Event["core/event\_dispatcher\<br\>(Событийная шина)"]  
-        CORE\_Config["core/config\_manager\<br\>(Менеджер конфиг.)"]  
-        CORE\_Log["diagnostics & logging\<br\>(Логирование)"]  
-        CORE\_Scheduler["core/scheduler\<br\>(Планировщик)"]  
+        CORE_Event["core/event_dispatcher\n(Событийная шина)"]  
+        CORE_Config["core/config_manager\n(Менеджер конфиг.)"]  
+        CORE_Log["diagnostics & logging\n(Логирование)"]  
+        CORE_Scheduler["core/scheduler\n(Планировщик)"]  
     end
 
     %% Связи APP  
-    APP\_Logic \--\> CORE\_Event  
-    APP\_Fingering \--\> CORE\_Event  
-    APP\_Midi \--\> CORE\_Event  
+    APP_Logic --> CORE_Event  
+    APP_Fingering --> CORE_Event  
+    APP_Midi --> CORE_Event  
       
-    APP\_Midi \--\>|Вызовы API| HAL\_BLE  
-    APP\_Midi \--\>|Вызовы API| HAL\_LED  
-    APP\_Fingering \--\>|Вызовы API| HAL\_Storage  
-    APP\_Logic \--\>|Вызовы API| CORE\_Config
+    APP_Midi -->|Вызовы API| HAL_BLE  
+    APP_Midi -->|Вызовы API| HAL_LED  
+    APP_Fingering -->|Вызовы API| HAL_Storage  
+    APP_Logic -->|Вызовы API| CORE_Config
 
     %% Связи HAL  
-    Sensors \--\> HAL\_Sensors  
-    HAL\_Sensors \--\> CORE\_Event  
+    Sensors --> HAL_Sensors  
+    HAL_Sensors --> CORE_Event  
       
-    HAL\_LED \--\> LED  
-    HAL\_BLE \--\> BLE\_HW  
-    HAL\_Power \--\> PSW  
+    HAL_LED --> LED  
+    HAL_BLE --> BLE_HW  
+    HAL_Power --> PSW  
       
-    HAL\_USB \--\> USB\_HW  
-    HAL\_Storage \-.-\>|Доступ к FS| HAL\_USB  
-    CORE\_Log \--\>|Вызовы API| HAL\_USB
+    HAL_USB --> USB_HW  
+    HAL_Storage \-.-\>|Доступ к FS| HAL_USB  
+    CORE_Log -->|Вызовы API| HAL_USB
 
     %% Связи CORE  
-    CORE\_Config \--\>|Вызовы API| HAL\_Storage  
-    CORE\_Scheduler \--\>|Вызовы API| HAL\_Power  
+    CORE_Config -->|Вызовы API| HAL_Storage  
+    CORE_Scheduler -->|Вызовы API| HAL_Power  
       
     classDef hal fill:\#DDEBF7,stroke:\#333  
     classDef app fill:\#E2F0D9,stroke:\#333  
     classDef core fill:\#FFF2CC,stroke:\#333  
     classDef hw fill:\#FBE5D6,stroke:\#333  
       
-    class HAL\_Sensors,HAL\_LED,HAL\_BLE,HAL\_USB,HAL\_Storage,HAL\_Power hal  
-    class APP\_Logic,APP\_Fingering,APP\_Midi app  
-    class CORE\_Event,CORE\_Config,CORE\_Log,CORE\_Scheduler core  
-    class Sensors,LED,BLE\_HW,USB\_HW,PSW hw
+    class HAL_Sensors,HAL_LED,HAL_BLE,HAL_USB,HAL_Storage,HAL_Power hal  
+    class APP_Logic,APP_Fingering,APP_Midi app  
+    class CORE_Event,CORE_Config,CORE_Log,CORE_Scheduler core  
+    class Sensors,LED,BLE_HW,USB_HW,PSW hw
 ```
 ## **2\. Диаграммы последовательности (Sequence Diagrams)**
 
@@ -84,16 +84,16 @@ graph TD
 Эта диаграмма показывает "горячий путь" (hot path) и параллельную обработку "сенсора звука".
 
 sequenceDiagram  
-    participant S as "hal\_sensors"  
-    participant E as "core/event\_dispatcher"  
+    participant S as "hal_sensors"  
+    participant E as "core/event_dispatcher"  
     participant L as "app/logic"  
     participant F as "app/fingering"  
     participant M as "app/midi"  
-    participant B as "hal\_ble"  
-    participant D as "hal\_led"
+    participant B as "hal_ble"  
+    participant D as "hal_led"
 
-    S-\>\>E: Событие: SensorValueChanged(id, raw\_value)  
-    E-\>\>L: SensorValueChanged(id, raw\_value)
+    S-\>\>E: Событие: SensorValueChanged(id, raw_value)  
+    E-\>\>L: SensorValueChanged(id, raw_value)
 
     par Основной поток (Ноты)  
         L-\>\>L: Анализ (Нажатие? Полузакрытие?)  
@@ -103,7 +103,7 @@ sequenceDiagram
         F-\>\>E: Событие: NotePitchSelected(NoteOn)  
         E-\>\>M: NotePitchSelected  
         M-\>\>B: API: sendMidiMessage(NoteOn)  
-        M-\>\>D: API: setMode(BLINK\_ONCE)  
+        M-\>\>D: API: setMode(BLINK_ONCE)  
     and Поток жестов (Вибрато)  
         L-\>\>L: Анализ (Вибрато?)  
         L-\>\>E: Событие: VibratoDetected  
@@ -122,10 +122,10 @@ sequenceDiagram
 
 sequenceDiagram  
     participant User as "Пользователь (ПК)"  
-    participant USB as "hal\_usb"  
-    participant FS as "hal\_storage"  
+    participant USB as "hal_usb"  
+    participant FS as "hal_storage"  
     participant LOG as "diagnostics & logging"  
-    participant CFG as "core/config\_manager"  
+    participant CFG as "core/config_manager"  
     participant APP as "app/module"
 
     par Редактирование конфига (Mass Storage)  
@@ -134,7 +134,7 @@ sequenceDiagram
         FS--\>\>USB: (данные файла)  
         USB--\>\>User: (данные файла)  
     and Чтение логов (Serial CDC)  
-        APP-\>\>LOG: LOG\_INFO("Сообщение...")  
+        APP-\>\>LOG: LOG_INFO("Сообщение...")  
         LOG-\>\>CFG: API: getLogLevel()  
         CFG--\>\>LOG: "INFO"  
         opt Уровень лога соответствует  
@@ -152,10 +152,10 @@ graph TD
     subgraph "Корпус устройства"  
         subgraph "Плата разработки (Dev Board)"  
             ESP32["ESP32-S3"]  
-            TP4056["Модуль зарядки\<br\>(TP4056)"]  
-            BOOST["Boost-конвертор\<br\>(DC-DC 3.7V \-\> 3.3V)"]  
+            TP4056["Модуль зарядки\n(TP4056)"]  
+            BOOST["Boost-конвертор\n(DC-DC 3.7V -> 3.3V)"]  
             USB["USB-C (встроенный)"]  
-            Board\_Btns["Кнопки (RST/BOOT, встр.)"]  
+            Board_Btns["Кнопки (RST/BOOT, встр.)"]  
             LED["LED (встроенный, напр. Neopixel)"]  
         end  
           
@@ -163,22 +163,22 @@ graph TD
         SENS["Сенсоры (Емкостные пины)"]  
         PSW["Кнопка питания (Вкл/Выкл)"]
 
-        USB \-- "Питание (5V)" \--\> TP4056  
-        USB \-- "Данные (D+/D-)" \--\> ESP32  
-        TP4056 \-- "Зарядка" \--\> BAT  
-        BAT \-- "Питание (3.7V)" \--\> BOOST  
-        BOOST \-- "Стаб. VCC (3.3V)" \--\> ESP32  
-        BOOST \-- "Стаб. VCC (3.3V)" \--\> SENS  
-        SENS \-- "Данные (Touch Pins)" \--\> ESP32  
-        LED \-- "Управление" \--\> ESP32  
-        Board\_Btns \-- "Управление" \--\> ESP32  
-        PSW \-- "Вкл/Выкл (Soft Latch)" \--\> BOOST  
+        USB \-- "Питание (5V)" --> TP4056  
+        USB \-- "Данные (D+/D-)" --> ESP32  
+        TP4056 \-- "Зарядка" --> BAT  
+        BAT \-- "Питание (3.7V)" --> BOOST  
+        BOOST \-- "Стаб. VCC (3.3V)" --> ESP32  
+        BOOST \-- "Стаб. VCC (3.3V)" --> SENS  
+        SENS \-- "Данные (Touch Pins)" --> ESP32  
+        LED \-- "Управление" --> ESP32  
+        Board_Btns \-- "Управление" --> ESP32  
+        PSW \-- "Вкл/Выкл (Soft Latch)" --> BOOST  
     end  
       
     classDef pcb fill:\#DDEBF7,stroke:\#333  
     classDef ext fill:\#E2F0D9,stroke:\#333  
       
-    class ESP32,TP4056,BOOST,USB,Board\_Btns,LED pcb  
+    class ESP32,TP4056,BOOST,USB,Board_Btns,LED pcb  
     class BAT,SENS,PSW ext
 
 ## **4\. Диаграмма управления LED (Сценарий 4\) \- (Исправлено)**
@@ -186,12 +186,12 @@ graph TD
 Эта диаграмма показывает, как разные модули управляют состоянием одного светодиода.
 
 sequenceDiagram  
-    participant BLE as "hal\_ble"  
+    participant BLE as "hal_ble"  
     participant MIDI as "app/midi"  
-    participant LED as "hal\_led"
+    participant LED as "hal_led"
 
     %% Сценарий подключения  
-    BLE-\>\>LED: API: setMode(FAST\_BLINK)  
+    BLE-\>\>LED: API: setMode(FAST_BLINK)  
     note right of BLE: Инициализация, поиск...  
       
     rect rgb(240, 240, 240\)  
@@ -202,16 +202,16 @@ sequenceDiagram
     note right of BLE: Устройство подключено
 
     %% Сценарий отправки MIDI (во время SOLID)  
-    MIDI-\>\>LED: API: setMode(BLINK\_ONCE)  
+    MIDI-\>\>LED: API: setMode(BLINK_ONCE)  
     note left of LED: LED моргает 1 раз и \<br/\>возвращается в SOLID  
       
     rect rgb(240, 240, 240\)  
         note over MIDI,LED: ...проходит время, игра...  
     end  
       
-    MIDI-\>\>LED: API: setMode(BLINK\_ONCE)  
+    MIDI-\>\>LED: API: setMode(BLINK_ONCE)  
       
     %% Сценарий отключения  
-    BLE-\>\>LED: API: setMode(FAST\_BLINK)  
+    BLE-\>\>LED: API: setMode(FAST_BLINK)  
     note right of BLE: Соединение потеряно
 
