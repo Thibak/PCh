@@ -155,6 +155,9 @@
 /
 ├── .clang-format           # Конфигурация стиля кода
 ├── .gitignore              # Файл Git ignore
+├── .github/                
+│   └──  workflows/
+│       └── main.yml          # PCh CI/CD Pipeline (GitHub Actions)
 │
 ├── data/                     # Исходные "дефолтные" конфиги для `pio run -t uploadfs`
 │   ├── settings.cfg
