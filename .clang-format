@@ -1,0 +1,22 @@
+# -----------------------------------------------------------------
+# .clang-format
+# Настроен на "Google C++ Style Guide" согласно ARCH_MANIFEST.MD
+# -----------------------------------------------------------------
+
+BasedOnStyle: Google
+
+# Настройки отступов
+IndentWidth: 4
+AccessModifierOffset: -2
+
+# Форматирование
+ColumnLimit: 120
+AllowShortFunctionsOnASingleLine: None
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+# Пробелы
+Cpp11BracedListStyle: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpacesInAngles: false

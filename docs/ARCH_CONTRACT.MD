@@ -151,7 +151,11 @@
 
 Этот раздел детализирует физическое расположение файлов в репозитории, следуя принципам, изложенным в `ARCH_MANIFEST.MD` (Раздел 4) и плане `DEVELOPMENT_PLAN.MD`.
 
+```
 /
+├── .clang-format           # Конфигурация стиля кода
+├── .gitignore              # Файл Git ignore
+│
 ├── data/                     # Исходные "дефолтные" конфиги для `pio run -t uploadfs`
 │   ├── settings.cfg
 │   └── fingering.cfg
@@ -259,3 +263,4 @@
 │
 ├── platformio.ini            # Конфигурация PlatformIO (Спринт 1.1)
 └── README.md                 # Общее описание проекта
+```
