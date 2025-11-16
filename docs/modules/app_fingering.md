@@ -1,10 +1,10 @@
 # **Детальное описание модуля: app/fingering**
 
-**Назначение документа:** \> Этот документ описывает внутреннюю логику, API и зависимости модуля AppFingering.
+**Назначение документа:** \> Этот документ описывает внутреннюю логику, API и зависимости модуля `AppFingering`.
 
 ## **1\. Назначение**
 
-Модуль AppFingering (Транслятор Аппликатуры) — это "словарь" системы.
+Модуль `AppFingering` (Транслятор Аппликатуры) — это "словарь" системы.
 
 Его **единственная задача** — транслировать (переводить) события `SENSOR_MASK_CHANGED` (какие сенсоры *сейчас* нажаты) и `HALF_HOLE_DETECTED` (жест "полузакрытие") в конкретную MIDI-ноту, используя правила из файла `fingering.cfg`.
 
@@ -60,12 +60,12 @@ std::map<uint8_t, FingeringRule> m_fingeringMap;
 ### **3.3. Внутренний parseFingeringConfig(content)**
 
 1. Идет по content строка за строкой.  
-2. Пропускает пустые строки и строки, начинающиеся с \#.  
-3. Разбивает строку на токены (напр., `0b11111110`, 62, 1, 63).  
-4. Парсит MASK (напр., 0b11111110) в `uint8_t mask = 0xFE`;.  
-5. Парсит NOTE (напр., 62\) в `int note = 62`;.  
+2. Пропускает пустые строки и строки, начинающиеся с `#`.  
+3. Разбивает строку на токены (напр., `0b11111110`, `62`, `1`, `63`).  
+4. Парсит MASK (напр., `0b11111110`) в `uint8_t mask = 0xFE`;.  
+5. Парсит NOTE (напр., `62`) в `int note = 62`;.  
 6. Создает `FingeringRule rule; rule.mainNote = note`;.  
-7. Если есть 3-й и 4-й токены (1, 63):  
+7. Если есть 3-й и 4-й токены (`1`, `6`3):  
    * Парсит `int sensorId = 1`;  
    * Парсит `int hhNote = 63`;  
    * `rule.halfHoleRules[sensorId] = hhNote`;  
@@ -79,29 +79,29 @@ std::map<uint8_t, FingeringRule> m_fingeringMap;
    * `case EventType::SENSOR_MASK_CHANGED`:  
      * `m_currentMask = event.payload.sensorMask.mask`;  
      * `int note = findNote(m_currentMask)`;  
-     * publishNote(note);  
-     * break;  
-   * case EventType::HALF\_HOLE\_DETECTED:  
-     * int sensorId \= event.payload.halfHole.id;  
-     * int note \= findNote(m\_currentMask, sensorId); // Ищем ноту с учетом полузакрытия  
-     * publishNote(note);  
-     * break;
+     * `publishNote(note)`;  
+     * `break`;  
+   * `case EventType::HALF_HOLE_DETECTED`:  
+     * `int sensorId = event.payload.halfHole.id`;  
+     * `int note = findNote(m_currentMask, sensorId)`; // Ищем ноту с учетом полузакрытия  
+     * `publishNote(note)`;  
+     * `break`;
 
 ### **3.5. Внутренние методы findNote() и publishNote()**
 
-1. **int AppFingering::findNote(uint8\_t mask, int halfHoleSensorId \= \-1):**  
-   * if (m\_fingeringMap.count(mask) \== 0):  
-     * return 0; // NOTE\_OFF (Тишина), если маска не найдена  
-   * const FingeringRule& rule \= m\_fingeringMap\[mask\];  
-   * if (halfHoleSensorId \!= \-1 && rule.halfHoleRules.count(halfHoleSensorId) \> 0):  
-     * return rule.halfHoleRules.at(halfHoleSensorId); // Найдена нота полузакрытия  
-   * return rule.mainNote; // Возвращаем обычную ноту  
-2. **void AppFingering::publishNote(int note):**  
+1. **`int AppFingering::findNote(uint8_t mask, int halfHoleSensorId = -1)`:**  
+   * `if (m_fingeringMap.count(mask) == 0)`:  
+     * `return 0`; // NOTE_OFF (Тишина), если маска не найдена  
+   * `const FingeringRule& rule = m_fingeringMap[mask]`;  
+   * `if (halfHoleSensorId != -1 && rule.halfHoleRules.count(halfHoleSensorId) > 0)`:  
+     * `return rule.halfHoleRules.at(halfHoleSensorId)`; // Найдена нота полузакрытия  
+   * `return rule.mainNote`; // Возвращаем обычную ноту  
+2. **`void AppFingering::publishNote(int note)`:**  
    * **Защита от "дребезга" нот:**  
-   * if (note \== m\_lastPublishedNote) return; // Не спамим, если нота та же  
-   * m\_lastPublishedNote \= note;  
-   * Event ev { EventType::NOTE\_PITCH\_SELECTED, .payload.notePitch \= { note } };  
-   * m\_dispatcher-\>postEvent(ev);
+   * `if (note == m_lastPublishedNote) return`; // Не спамим, если нота та же  
+   * `m_lastPublishedNote = note`;  
+   * `Event ev { EventType::NOTE_PITCH_SELECTED, .payload.notePitch = { note } }`;  
+   * `m_dispatcher->postEvent(ev)`;
 
 ## **4\. Публичный API (C++ Header)**
 
@@ -172,13 +172,13 @@ private:
 ## **5\. Тестирование (Host-First)**
 
 * **Unit-тест (Спринт 2.5):**  
-  1. Создать MockHalStorage (Спринт 1.3).  
-  2. mockStorage-\>writeFile("/fingering.cfg", "0b11111110 62 1 63\\n0b11111100 64");  
-  3. Создать AppFingering, вызвать appFingering-\>init(mockStorage). Проверить true.  
-  4. Создать EventDispatcher, appFingering-\>subscribe(dispatcher). (Нужен Mock-диспетчер или реальный).  
-  5. Вызвать appFingering-\>handleEvent(SensorMaskChanged(0b11111110)).  
-  6. *Проверить*, что EventDispatcher получил NotePitchSelected(62).  
-  7. Вызвать appFingering-\>handleEvent(HalfHoleDetected(1)). (Маска не менялась).  
-  8. *Проверить*, что EventDispatcher получил NotePitchSelected(63).  
-  9. Вызвать appFingering-\>handleEvent(SensorMaskChanged(0b11111100)).  
-  10. *Проверить*, что EventDispatcher получил NotePitchSelected(64).
+  1. Создать `MockHalStorage` (Спринт 1.3).  
+  2. `mockStorage->writeFile("fingering.cfg", "0b11111110 62 1 63\n0b11111100 64")`;  
+  3. Создать `AppFingering`, вызвать `appFingering->init(mockStorage)`. Проверить `true`.  
+  4. Создать `EventDispatcher`, `appFingering->subscribe(dispatcher)`. (Нужен Mock-диспетчер или реальный).  
+  5. Вызвать `appFingering->handleEvent(SensorMaskChanged(0b11111110))`.  
+  6. *Проверить*, что `EventDispatcher` получил `NotePitchSelected(62)`.  
+  7. Вызвать `appFingering->handleEvent(HalfHoleDetected(1))`. (Маска не менялась).  
+  8. *Проверить*, что `EventDispatcher` получил `NotePitchSelected(63)`.  
+  9. Вызвать `appFingering->handleEvent(SensorMaskChanged(0b11111100))`.  
+  10. *Проверить*, что `EventDispatcher` получил `NotePitchSelected(64)`.
