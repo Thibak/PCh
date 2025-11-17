@@ -29,11 +29,11 @@
 
 *Цель: Подготовить репозиторий, CI/CD, а также **полный набор Mock-классов** для тестирования по принципу "Host-First".*
 
-* **(-\>)Спринт 1.1 (Код):** Инициализация `Git`, `.gitignore`, `clang-format`, `cppcheck`.  
-* **Спринт 1.2 (Код):** Создание `platformio.ini` (`[env:native]`, `[env:esp32s3_app]`).  
-* **Спринт 1.3 (Код):** Настройка CI/CD (Этап 1 Линтинг, Этап 2 Сборка `env:native`).  
-* **Спринт 1.4 (Код):** Создание структуры папок (`src/app`, `src/hal`, `src/core`, `include/hal_interfaces`, `test/mocks`).  
-* **Спринт 1.5 (Код):** Создание всех абстрактных интерфейсов (`i_hal_*.h`) в `include/hal_interfaces/`.  
+* **(+) Спринт 1.1 (Код):** Инициализация `Git`, `.gitignore`, `clang-format`, `cppcheck`.  
+* **(+) Спринт 1.2 (Код):** Создание `platformio.ini` (`[env:native]`, `[env:esp32s3_app]`).  
+* **(+) Спринт 1.3 (Код):** Настройка CI/CD (Этап 1 Линтинг, Этап 2 Сборка `env:native`).  
+* **(+) Спринт 1.4 (Код):** Создание структуры папок (`src/app`, `src/hal`, `src/core`, `include/hal_interfaces`, `test/mocks`).  
+* **(-\>) Спринт 1.5 (Код):** Создание всех абстрактных интерфейсов (`i_hal_*.h`) в `include/hal_interfaces/`.  
 * **Спринт 1.6 (Код / Mock):** Реализация `MockHalStorage`. (Должен уметь читать `settings.cfg` из файловой системы ПК для тестов).  
 * **Спринт 1.7 (Код / Mock):** Реализация `MockHalUsb`. (Должен выводить `serialPrint()` в `stdout` консоли).  
 * **Спринт 1.8 (Код / Mock):** Реализация `MockHalLed`. (Должен выводить `setMode()` в `stdout` консоли).  
