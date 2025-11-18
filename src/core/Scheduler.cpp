@@ -37,6 +37,10 @@ void Application::init(
     m_configManager.init(storage);
 
     // --- Фаза 2: USB и Логирование ---
+
+    // Инициализируем USB (Mass Storage + CDC)
+    usb->init(storage);
+
     // (usb передан нам из main.cpp)
     Logger::getInstance()->init(&m_configManager, usb, system);
     
