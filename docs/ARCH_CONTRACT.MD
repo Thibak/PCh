@@ -244,13 +244,13 @@
 │
 ├── test/                     # Тесты (Только Host, env:native)
 │   ├── mocks/                # Mock-реализации HAL (Эпик 1)
-│   │   ├── MockHalBle.h
-│   │   ├── MockHalLed.h
-│   │   ├── MockHalPower.h
-│   │   ├── MockHalSensors.h
-│   │   ├── MockHalStorage.h
-│   │   ├── MockHalSystem.h
-│   │   └── MockHalUsb.h
+│   │   ├── MockHalBle/.h
+│   │   ├── MockHalLed/.h
+│   │   ├── MockHalPower/.h
+│   │   ├── MockHalSensors/.h
+│   │   ├── MockHalStorage/.h
+│   │   ├── MockHalSystem/.h
+│   │   └── MockHalUsb/.h
 │   │
 │   ├── unit_app/             # Unit-тесты для APP
 │   │   └── test_app_fingering.cpp
