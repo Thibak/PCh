@@ -13,6 +13,24 @@ MockHalLed::~MockHalLed() {
 }
 
 /**
+ * @brief (Новое) Mock-реализация init.
+ */
+bool MockHalLed::init(ConfigManager* configManager) {
+    std::cout << "[MockHalLed] Init() called." << std::endl;
+    // (В реальном моке мы бы могли что-то прочитать из configManager,
+    // но для заглушки это не обязательно)
+    return true;
+}
+
+/**
+ * @brief (Новое) Mock-реализация startTask.
+ */
+void MockHalLed::startTask() {
+    std::cout << "[MockHalLed] startTask() called (no-op)." << std::endl;
+    // (На хосте задачи не запускаются)
+}
+
+/**
  * @brief Эмулирует setMode, выводя в консоль (stdout).
  * (Реализация требования Спринта 1.8)
  */

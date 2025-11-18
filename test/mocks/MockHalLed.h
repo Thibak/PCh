@@ -8,6 +8,7 @@
  */
 #pragma once
 #include "interfaces/IHalLed.h"
+#include "core/ConfigManager.h" // <-- (Новое) для init()
 #include <iostream> // Для std::cout
 
 // Helper для преобразования enum в строку
@@ -25,6 +26,16 @@ class MockHalLed : public IHalLed {
 public:
     MockHalLed();
     virtual ~MockHalLed();
+
+    /**
+     * @brief (Новое) Mock-реализация init.
+     */
+    virtual bool init(ConfigManager* configManager) override;
+
+    /**
+     * @brief (Новое) Mock-реализация startTask.
+     */
+    virtual void startTask() override;
 
     /**
      * @brief Эмулирует setMode, выводя в консоль (stdout).

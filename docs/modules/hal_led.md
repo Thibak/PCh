@@ -18,6 +18,7 @@
 * **`#include "core/config_manager.h"`:** (Критическая) Используется в `init()` для получения `getLedPin()`, `getLedBlinkDurationMs()` и `getLedBlinkPauseMs()`.  
 * **`ESP-IDF` / `Arduino`:** Драйвер для управления `LED` (напр., `Adafruit_NeoPixel.h` или простой `digitalWrite` для одноцветного LED).  
 * **`FreeRTOS`:** `xTaskCreate`, `vTaskDelayUntil`.
+* **`#include <iostream>` (Для MockHalLed)**: Для вывода в `stdout`.
 
 ## **3\. Логика работы**
 
@@ -29,6 +30,10 @@
 // (i_hal_led.h)
 #pragma once
 
+// (Forward-declare)
+class ConfigManager;
+
+// Определяем режимы, которые требуются PRD.MD
 enum class LedMode {
     OFF,          // Выключен
     SOLID,        // Горит (BLE подключен)
@@ -39,6 +44,16 @@ enum class LedMode {
 class IHalLed {
 public:
     virtual ~IHalLed() {}
+
+    /**
+     * @brief (Новое) Инициализирует пин LED из конфига.
+     */
+    virtual bool init(ConfigManager* configManager) = 0;
+
+    /**
+     * @brief (Новое) Запускает задачу FreeRTOS для управления LED.
+     */
+    virtual void startTask() = 0;
 
     /**
      * @brief Устанавливает желаемый режим работы LED.
@@ -90,8 +105,8 @@ public:
 ```cpp
 // (HalLed.h)
 #pragma once
-#include "hal_interfaces/i_hal_led.h"
-#include "core/config_manager.h"
+#include "interfaces/IHalLed.h" // <-- Используем обновленный интерфейс
+#include "core/ConfigManager.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -104,12 +119,12 @@ public:
     /**
      * @brief Инициализация пина LED
      */
-    bool init(ConfigManager* configManager);
+    virtual bool init(ConfigManager* configManager) override;
     
     /**
      * @brief Запускает задачу FreeRTOS для управления LED.
      */
-    void startTask();
+    virtual void startTask() override;
 
     /**
      * @brief Устанавливает желаемый режим работы LED. Неблокирующий.
@@ -133,16 +148,19 @@ private:
 };
 ```
 
-## **5\. Тестирование (Host-First)**
+## **5. Тестирование (Host-First)** 
 
-* `HalLed` — это "железный" модуль. Он **не будет** компилироваться в `[env:native]`.  
-* Вместо него `[env:native]` будет использовать **`MockHalLed`** (Спринт 1.8).  
-* `MockHalLed` будет реализовывать `IHalLed`.
+`HalLed` — это "железный" модуль. Он не будет компилироваться в `[env:native]`.
+
+Вместо него `[env:native]` будет использовать `MockHalLed` (Спринт 1.8).
+
+`MockHalLed` будет реализовывать `IHalLed`.
 
 ```cpp
 // (Пример в test/mocks/MockHalLed.h)
 #pragma once
-#include "hal_interfaces/i_hal_led.h"
+#include "interfaces/IHalLed.h"
+#include "core/ConfigManager.h" // <-- (Новое) для init()
 #include <iostream> // Для std::cout
 
 // Helper для преобразования enum в строку
@@ -158,25 +176,27 @@ inline const char* ledModeToString(LedMode mode) {
 
 class MockHalLed : public IHalLed {
 public:
-    MockHalLed() : m_currentState(LedMode::OFF), m_blinkOnceCount(0) {}
+    MockHalLed();
+    virtual ~MockHalLed();
+
+    /**
+     * @brief (Новое) Mock-реализация init.
+     */
+    virtual bool init(ConfigManager* configManager) override;
+
+    /**
+     * @brief (Новое) Mock-реализация startTask.
+     */
+    virtual void startTask() override;
 
     /**
      * @brief Эмулирует setMode, выводя в консоль (stdout).
      */
-    virtual void setMode(LedMode mode) override {
-        // Требование Спринта 1.8
-        std::cout << "[MockHalLed] setMode: " << ledModeToString(mode) << std::endl;
-        
-        if (mode == LedMode::BLINK_ONCE) {
-            m_blinkOnceCount++;
-        } else {
-            m_currentState = mode;
-        }
-    }
+    virtual void setMode(LedMode mode) override;
 
     // --- Методы для тестов ---
-    LedMode getCurrentState() const { return m_currentState; }
-    int getBlinkOnceCount() const { return m_blinkOnceCount; }
+    LedMode getCurrentState() const;
+    int getBlinkOnceCount() const;
 
 private:
     LedMode m_currentState;
