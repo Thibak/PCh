@@ -80,10 +80,12 @@ void loop() {
  * проходила успешно.
  */
 
+#ifndef PIO_UNIT_TESTING
 int main(int argc, char** argv) {
     std::cout << "Building for native... (main.cpp)" << std::endl;
     std::cout << "To run tests, use 'pio test -e native'" << std::endl;
     return 0;
 }
+#endif
 
 #endif // ESP32_TARGET / NATIVE_TEST

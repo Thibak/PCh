@@ -216,8 +216,24 @@
 │   ├── events.h              # Enum EventType и struct Event
 │   └── LogLevel.h            # Enum LogLevel
 │
-├── lib/                      # Внешние библиотеки (управляются PlatformIO)
-│   └── Arduino-BLE-MIDI/     # (Например)
+├── lib/                      # Внешние и внутренние библиотеки (управляются PlatformIO)
+│   ├── Arduino-BLE-MIDI/     # (Например)
+│   │
+│   └── mocks/                # (Обновлено: lowercase) Библиотека Mock-объектов для тестирования
+│       ├── MockHalBle.h
+│       ├── MockHalBle.cpp
+│       ├── MockHalLed.h
+│       ├── MockHalLed.cpp
+│       ├── MockHalPower.h
+│       ├── MockHalPower.cpp
+│       ├── MockHalSensors.h
+│       ├── MockHalSensors.cpp
+│       ├── MockHalStorage.h
+│       ├── MockHalStorage.cpp
+│       ├── MockHalSystem.h
+│       ├── MockHalSystem.cpp
+│       ├── MockHalUsb.h
+│       └── MockHalUsb.cpp
 │
 ├── src/                      # Исходный код (.cpp)
 │   ├── app/                  # Реализация (.cpp) бизнес-логики (Host + Target)
@@ -243,15 +259,6 @@
 │   └── main.cpp              # Главная точка входа (запускает Scheduler)
 │
 ├── test/                     # Тесты (Только Host, env:native)
-│   ├── mocks/                # Mock-реализации HAL (Эпик 1)
-│   │   ├── MockHalBle/.h
-│   │   ├── MockHalLed/.h
-│   │   ├── MockHalPower/.h
-│   │   ├── MockHalSensors/.h
-│   │   ├── MockHalStorage/.h
-│   │   ├── MockHalSystem/.h
-│   │   └── MockHalUsb/.h
-│   │
 │   ├── unit_app/             # Unit-тесты для APP
 │   │   └── test_app_fingering.cpp
 │   │
