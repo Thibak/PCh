@@ -51,11 +51,11 @@ jobs:
         run: pio check --environment=native
 
   # -------------------------------------------------
-  # ЗАДАЧА 2: Сборка "Host" окружения
+  # ЗАДАЧА 2: Сборка и Тестирование "Host" окружения
   # (Соответствует "Этапу 2" нашего пайплайна)
   # -------------------------------------------------
-  build-native-job:
-    name: 2. Build (env:native)
+  build-and-test-native-job:
+    name: 2. Build & Test (env:native)
     runs-on: ubuntu-latest
 
     # ЗАВИСИМОСТЬ: Эта задача запустится ТОЛЬКО если 'lint-job' прошла успешно
@@ -81,6 +81,11 @@ jobs:
       - name: Install C++ compiler (g++)
         run: sudo apt-get update && sudo apt-get install -y g++
 
-      # 5. Запускаем сборку 'native' окружения
+      # 5. Запускаем сборку 'native' окружения (Проверка компиляции src/)
       - name: Build native environment
-        run: pio run --environment=native
+        run: pio run -vv --environment=native
+
+      # 6. (НОВОЕ) Запускаем ТЕСТЫ на 'native' окружении
+      # Флаг -vv включает подробный вывод (stdout из тестов будет виден в логах CI)
+      - name: Run Tests (Native)
+        run: pio test -vv --environment=native
