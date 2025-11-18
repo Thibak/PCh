@@ -45,8 +45,8 @@
 
 *Цель: Реализовать и протестировать 100% "мозга" устройства на ПК (`env:native`), используя Mock-классы из Эпика 1\.*
 
-* **(->) Спринт 2.1 (Код: Каркас)**: Создание всех заголовочных файлов `.h` для `CORE` (`Scheduler.h`, `ConfigManager.h`, `EventDispatcher.h`, `Logger.h`) и `APP` (`AppFingering.h`, `AppLogic.h`, `AppMidi.h`).
-* **Спринт 2.2 (Код: Заглушки)**: Создание всех `.cpp` файлов (с пустыми методами) для `CORE` и `APP`, чтобы проект компилировался.
+* **(+) Спринт 2.1 (Код: Каркас)**: Создание всех заголовочных файлов `.h` для `CORE` (`Scheduler.h`, `ConfigManager.h`, `EventDispatcher.h`, `Logger.h`) и `APP` (`AppFingering.h`, `AppLogic.h`, `AppMidi.h`).
+* **(-\>) Спринт 2.2 (Код: Заглушки)**: Создание всех `.cpp` файлов (с пустыми методами) для `CORE` и `APP`, чтобы проект компилировался.
 * **Спринт 2.3 (Тест)**: Создание `test/test_main.cpp` и интеграционный тест для `core/scheduler` (проверка `init` и `startTasks` на `env:native`).
 * **Спринт 2.4 (Код)**: Реализация `core/config_manager.cpp`.
 * **Спринт 2.5 (Тест)**: Unit-тесты для `core/config_manager` (Host) (используя `MockHalStorage`).
