@@ -2,7 +2,7 @@
  * ConfigManager.h
  *
  * Соответствует: docs/modules/core_config_manager.md
- * DEVELOPMENT_PLAN.MD - Спринт 2.1
+ * DEVELOPMENT_PLAN.MD - Спринт 2.1 / 2.4
  */
 #pragma once
 
@@ -21,6 +21,9 @@ public:
      * @return true, если конфиг успешно загружен и распарсен (или если успешно загружены defaults).
      */
     bool init(IHalStorage* storage);
+
+    // --- Сеттеры (для runtime-настройки и тестов) ---
+    void setLogLevel(LogLevel level); // <-- (Новое)
 
     // --- [system] ---
     LogLevel getLogLevel() const;
@@ -60,7 +63,7 @@ private:
      */
     void loadDefaults();
 
-    // Приватные поля для хранения распарсенных значений
+    // Приватные поля
     LogLevel m_logLevel;
     int m_autoOffTimeMin;
     std::string m_ledPin;

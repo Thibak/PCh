@@ -44,13 +44,18 @@ ConfigManager::ConfigManager() {
 
 bool ConfigManager::init(IHalStorage* storage) {
     std::string content;
+    // Пытаемся прочитать файл. Если не вышло - остаются defaults.
     if (storage->readFile("/settings.cfg", content)) {
         parseConfig(content);
         return true;
-    } else {
-        // Файл не найден, defaults уже загружены в конструкторе
-        return false;
     }
+    return false;
+}
+
+// --- Сеттеры ---
+
+void ConfigManager::setLogLevel(LogLevel level) {
+    m_logLevel = level;
 }
 
 // --- Геттеры ---
