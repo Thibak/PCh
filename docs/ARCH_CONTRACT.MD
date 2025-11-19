@@ -219,7 +219,9 @@
 ├── lib/                      # Внешние и внутренние библиотеки (управляются PlatformIO)
 │   ├── Arduino-BLE-MIDI/     # (Например)
 │   │
-│   └── mocks/                # (Обновлено: lowercase) Библиотека Mock-объектов для тестирования
+│   └── mocks/                # Библиотека Mock-объектов для тестирования
+│       ├── MockEventHandler.h  # Spy для тестирования событий
+│       ├── MockEventHandler.cpp
 │       ├── MockHalBle.h
 │       ├── MockHalBle.cpp
 │       ├── MockHalLed.h
@@ -259,17 +261,16 @@
 │   └── main.cpp              # Главная точка входа (запускает Scheduler)
 │
 ├── test/                     # Тесты (Только Host, env:native)
-│   ├── unit_app/             # Unit-тесты для APP
-│   │   └── test_app_fingering.cpp
+│   ├── test_config_manager/  # Unit-тесты для ConfigManager
+│   │   └── test_main.cpp
 │   │
-│   ├── unit_core/            # Unit-тесты для CORE
-│   │   └── test_config_manager.cpp
+│   ├── test_event_dispatcher/ # Unit-тесты для EventDispatcher
+│   │   └── test_main.cpp
 │   │
-│   ├── integration/          # Интеграционные тесты Host-First (Эпик 2)
-│   │   ├── test_host_logic_e2e.cpp  # (Главный тест логики)
-│   │   └── test_host_midi.cpp
+│   ├── test_scheduler/       # Интеграционные тесты Scheduler
+│   │   └── test_main.cpp
 │   │
-│   └── test_main.cpp         # Точка входа для `pio test -e native`
+│   └── ... (другие тесты)
 │
 ├── platformio.ini            # Конфигурация PlatformIO (Спринт 1.1)
 └── README.md                 # Общее описание проекта

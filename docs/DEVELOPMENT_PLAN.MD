@@ -50,9 +50,9 @@
 * **(+) Спринт 2.3 (Тест)**: Создание `test/test_main.cpp` и интеграционный тест для `core/scheduler` (проверка `init` и `startTasks` на `env:native`).
 * **(+) Спринт 2.4 (Код)**: Реализация `core/config_manager.cpp`.
 * **(+) Спринт 2.5 (Тест)**: Unit-тесты для `core/config_manager` (Host) (используя `MockHalStorage`).
-* **(-\>) Спринт 2.6 (Код)**: Реализация `core/event_dispatcher.cpp`.
-* **Спринт 2.7 (Тест)**: Unit-тесты для `core/event_dispatcher` (Host).
-* **Спринт 2.8 (Код)**: Реализация `diagnostics/logger.cpp`.
+* **(+) Спринт 2.6 (Код)**: Реализация `core/event_dispatcher.cpp`.
+* **(+) Спринт 2.7 (Тест)**: Unit-тесты для `core/event_dispatcher` (Host).
+* **(-\>) Спринт 2.8 (Код)**: Реализация `diagnostics/logger.cpp`.
 * **Спринт 2.9 (Тест)**: Unit-тесты для `diagnostics/logger` (Host) (проверка вывода в `MockHalUsb`).
 * **Спринт 2.10 (Код)**: Реализация `app/fingering.cpp` (Парсинг, поиск ноты).
 * **Спринт 2.11 (Тест)**: Интеграционный тест для `app/fingering` (Host) (используя `MockHalStorage`).
