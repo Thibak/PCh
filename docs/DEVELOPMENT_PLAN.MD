@@ -47,7 +47,41 @@
 
 * **(+) Спринт 2.1 (Код: Каркас)**: Создание всех заголовочных файлов `.h` для `CORE` (`Scheduler.h`, `ConfigManager.h`, `EventDispatcher.h`, `Logger.h`) и `APP` (`AppFingering.h`, `AppLogic.h`, `AppMidi.h`).
 * **(+) Спринт 2.2 (Код: Заглушки)**: Создание всех `.cpp` файлов (с пустыми методами) для `CORE` и `APP`, чтобы проект компилировался.
-* **(+) Спринт 2.3 (Тест)**: Создание `test/test_main.cpp` и интеграционный тест для `core/scheduler` (проверка `init` и `startTasks` на `env:native`).
+* **(+) Спринт 2.3 (Код+Unit)**: Модуль `core/config_manager`.
+  * Реализация `src/core/ConfigManager.cpp`.
+  * Unit-тест `test/test_config_manager/test_main.cpp`.
+* **(+) Спринт 2.4 (Код+Unit)**: Модуль `core/event_dispatcher` (с использованием `MockEventHandler`).
+  * Реализация `src/core/EventDispatcher.cpp` (Native Sync Mode).
+  * Unit-тест `test/test_event_dispatcher/test_main.cpp`.
+* **(->) Спринт 2.5 (Код+Unit)**: Модуль `diagnostics/logger`.
+  * Реализация `src/core/Logger.cpp`.
+  * Unit-тест `test/test_logger/test_main.cpp` (проверка форматирования и вывода в `MockHalUsb`).
+* **Спринт 2.6 (Код+Unit)**: Модуль `app/fingering`.
+  * Реализация `src/app/AppFingering.cpp`.
+  * Unit-тест `test/test_app_fingering/test_main.cpp` (Изолированная проверка таблицы аппликатур).
+* **Спринт 2.7 (Код+Unit)**: Модуль `app/logic` (Часть 1: Mute, Mask).
+  * Реализация `src/app/AppLogic.cpp` (Базовая машина состояний).
+  * Unit-тест `test/test_app_logic/test_main.cpp` (Изолированная проверка логики порогов).
+* **Спринт 2.8 (Код+Unit)**: Модуль `app/midi`.
+  * Реализация `src/app/AppMidi.cpp`.
+  * Unit-тест `test/test_app_midi/test_main.cpp` (Изолированная проверка генерации MIDI-команд).
+* **Спринт 2.9 (Код+Unit)**: Интеграция `core/scheduler`.
+  * Реализация `src/core/Scheduler.cpp` (связывание всего).
+  * Smoke-тест `test/test_scheduler/test_main.cpp` (уже существует, поддержка актуальности).
+* **Спринт 2.10 (Код+Unit)**: Доработка `app/logic` (Вибрато и Полузакрытие).
+  * Доработка реализации.
+  * Расширение Unit-теста.
+* **Спринт 2.11 (Код+Unit)**: Доработка `app/midi` (Настройка строя `base_pitch_hz`).
+  * Доработка реализации.
+  * Расширение Unit-теста.
+* **Спринт 2.12 (Integration Tests)**: Полная цепочка сигналов (Host).
+  * Создание `test/integration/test_full_chain/test_main.cpp`.
+  * Тест 1: `MockSensor` -\> `AppLogic` -\> `EventDispatcher` -\> `AppFingering` -\> `AppMidi` -\> `MockHalBle` (Проверка: нажатие сенсора вызывает NoteOn).
+  * Тест 2: `MockSensor` (Mute) -\> ... -\> `MockHalBle` (AllNotesOff).
+  * Тест 3: Изменение конфига -\> Перезагрузка логики (через моки).
+
+
+<!-- * **(+) Спринт 2.3 (Тест)**: Создание `test/test_main.cpp` и интеграционный тест для `core/scheduler` (проверка `init` и `startTasks` на `env:native`).
 * **(+) Спринт 2.4 (Код)**: Реализация `core/config_manager.cpp`.
 * **(+) Спринт 2.5 (Тест)**: Unit-тесты для `core/config_manager` (Host) (используя `MockHalStorage`).
 * **(+) Спринт 2.6 (Код)**: Реализация `core/event_dispatcher.cpp`.
@@ -63,7 +97,7 @@
 * **Спринт 2.16 (Код)**: Доработка `app/logic` (Реализация детекции Вибрато).
 * **Спринт 2.17 (Тест)**: Интеграционный тест для `app/logic` (Вибрато).
 * **Спринт 2.18 (Код)**: Доработка `app/midi` (Реализация `base_pitch_hz` RPN/MTS).
-* **Спринт 2.19 (Тест)**: Интеграционный тест для `app/midi` (Проверка `base_pitch_hz`).
+* **Спринт 2.19 (Тест)**: Интеграционный тест для `app/midi` (Проверка `base_pitch_hz`). -->
 
 ### **Эпик 3: Реализация HAL (Hardware Abstraction Layer)**
 
