@@ -96,12 +96,8 @@ void test_mask_logic() {
 
     TEST_ASSERT_EQUAL_INT(1, spy.getReceivedCount());
     TEST_ASSERT_EQUAL(EventType::SENSOR_MASK_CHANGED, spy.getLastEventType());
-    // Маска должна быть 0x01
-    TEST_ASSERT_EQUAL_INT(0x01, spy.getLastIntPayload()); // В MockEventHandler мы использовали payload.sensorMask.mask?
-    // Проверим MockEventHandler.cpp:
-    // if (event.type == EventType::SENSOR_VALUE_CHANGED) ...
-    // А для SENSOR_MASK_CHANGED мы не сохраняли payload в `m_lastIntPayload`?
-    // Надо проверить MockEventHandler! Если нет, тест упадет.
+    // Маска должна быть 0x01 (только бит 0 установлен)
+    TEST_ASSERT_EQUAL_INT(0x01, spy.getLastIntPayload());
 }
 
 /**
@@ -112,13 +108,10 @@ void test_half_hole_logic() {
     Event ev1(EventType::SENSOR_VALUE_CHANGED, SensorValuePayload{1, 350});
     appLogic.handleEvent(ev1);
 
-    // Должно прийти событие HALF_HOLE_DETECTED
-    // И возможно SENSOR_MASK_CHANGED (если состояние изменилось с CLOSED, но тут с OPEN, так что маска 0 -> 0, не должна меняться)
-    
     // Проверяем последнее событие
     TEST_ASSERT_EQUAL(EventType::HALF_HOLE_DETECTED, spy.getLastEventType());
-    // Payload = ID сенсора
-    // TEST_ASSERT_EQUAL_INT(1, spy.getLastIntPayload()); // Опять же, зависит от MockEventHandler
+    // Payload = ID сенсора (1)
+    TEST_ASSERT_EQUAL_INT(1, spy.getLastIntPayload()); 
 }
 
 int main(int argc, char **argv) {
