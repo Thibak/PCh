@@ -22,6 +22,8 @@ void MockEventHandler::handleEvent(const Event& event) {
         m_lastIntPayload = event.payload.halfHole.id;
     } else if (event.type == EventType::NOTE_PITCH_SELECTED) {
         m_lastIntPayload = event.payload.notePitch.pitch;
+    } else if (event.type == EventType::SENSOR_MASK_CHANGED) { 
+        m_lastIntPayload = (int)event.payload.sensorMask.mask;
     }
 }
 

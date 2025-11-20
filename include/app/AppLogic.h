@@ -58,6 +58,9 @@ private:
      */
     static void appLogicTask(void* params);
     
+    // (Новое) Объявление метода обработки
+    void processSensorEvent(const Event& event);
+
     /**
      * @brief "Медленный" цикл, выполняющий всю логику (DSP, FSM).
      */
