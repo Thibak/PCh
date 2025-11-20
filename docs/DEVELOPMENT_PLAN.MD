@@ -71,10 +71,10 @@
 * **(+) Спринт 2.10 (Код+Unit)**: Доработка `app/logic` (Вибрато и Полузакрытие).
   * Доработка реализации.
   * Расширение Unit-теста.
-* **(-\>) Спринт 2.11 (Код+Unit)**: Доработка `app/midi` (Настройка строя `base_pitch_hz`).
+* **(+) Спринт 2.11 (Код+Unit)**: Доработка `app/midi` (Настройка строя `base_pitch_hz`).
   * Доработка реализации.
   * Расширение Unit-теста.
-* **Спринт 2.12 (Integration Tests)**: Полная цепочка сигналов (Host).
+* **(-\>) Спринт 2.12 (Integration Tests)**: Полная цепочка сигналов (Host).
   * Создание `test/integration/test_full_chain/test_main.cpp`.
   * Тест 1: `MockSensor` -\> `AppLogic` -\> `EventDispatcher` -\> `AppFingering` -\> `AppMidi` -\> `MockHalBle` (Проверка: нажатие сенсора вызывает NoteOn).
   * Тест 2: `MockSensor` (Mute) -\> ... -\> `MockHalBle` (AllNotesOff).

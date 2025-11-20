@@ -46,9 +46,19 @@ void AppMidi::subscribe(EventDispatcher* dispatcher) {
 
 void AppMidi::handleEvent(const Event& event) {
     switch (event.type) {
-        case EventType::BLE_CONNECTED:
-             // (TBD Спринт 2.11: Отправка настройки строя при переподключении)
+        case EventType::BLE_CONNECTED: {
+             // Спринт 2.11: Отправка настройки строя при подключении
+             // Отправляем только если частота отличается от стандарта 440Hz (с небольшим допуском ??? )
+             if (m_halBle && std::abs(m_basePitchHz - 440.0f) > 0.01f) {
+                 m_halBle->sendTuningMessage(m_basePitchHz);
+                 LOG_INFO(TAG, "Sent tuning message: %.2f Hz", m_basePitchHz);
+                 
+                 #if defined(NATIVE_TEST)
+                 std::cout << "[AppMidi] BLE Connected -> Sending Tuning: " << m_basePitchHz << std::endl;
+                 #endif
+             }
              break;
+        }
 
         case EventType::NOTE_PITCH_SELECTED: {
             int newNote = event.payload.notePitch.pitch;

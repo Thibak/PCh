@@ -27,6 +27,10 @@ void setUp(void) {
     dispatcher.reset();
     dispatcher.init();
 
+    // !!! ИСПРАВЛЕНИЕ: Инициализируем HAL моки, передавая им диспетчер
+    mockBle.init(&dispatcher); 
+    // (mockLed.init не критичен здесь, но mockBle нужен для simulateConnect)
+
     // 3. Реинициализация AppMidi (сброс внутренних флагов)
     appMidi.init(&mockBle, &mockLed, 440.0f);
     appMidi.subscribe(&dispatcher);
@@ -129,6 +133,37 @@ void test_vibrato() {
     TEST_ASSERT_EQUAL_FLOAT(0.8f, mockBle.getLastPitchBend());
 }
 
+/**
+ * @brief Тест 6: Отправка настройки строя при подключении (Спринт 2.11)
+ */
+void test_tuning_config() {
+    // 1. Инициализируем с нестандартной частотой (442 Hz)
+    appMidi.init(&mockBle, &mockLed, 442.0f);
+    
+    // 2. Эмулируем подключение
+    mockBle.simulateConnect(); // Это отправит BLE_CONNECTED через диспетчер
+    
+    // 3. Проверяем, что ушло сообщение о настройке
+    TEST_ASSERT_EQUAL_FLOAT(442.0f, mockBle.getTuningMessageSent());
+}
+
+/**
+ * @brief Тест 7: Отсутствие настройки при стандартной частоте (440 Hz)
+ */
+void test_tuning_default() {
+    // 1. Инициализируем со стандартной частотой
+    appMidi.init(&mockBle, &mockLed, 440.0f);
+    
+    // Сбросим мок, чтобы убедиться, что там 0.0
+    mockBle.reset();
+
+    // 2. Эмулируем подключение
+    mockBle.simulateConnect();
+    
+    // 3. Проверяем, что сообщение НЕ ушло (осталось дефолтное 0.0 в моке)
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, mockBle.getTuningMessageSent());
+}
+
 int main(int argc, char **argv) {
     UNITY_BEGIN();
     RUN_TEST(test_play_note);
@@ -136,5 +171,7 @@ int main(int argc, char **argv) {
     RUN_TEST(test_pause);
     RUN_TEST(test_mute_logic);
     RUN_TEST(test_vibrato);
+    RUN_TEST(test_tuning_config);
+    RUN_TEST(test_tuning_default);
     return UNITY_END();
 }
