@@ -49,6 +49,8 @@ bool EventDispatcher::init() {
 
     #elif defined(NATIVE_TEST)
         // Для тестов инициализация всегда успешна
+        // ВАЖНО: Сбрасываем подписчиков при ре-инициализации (для тестов)
+        m_subscribers.clear(); 
         std::cout << "[EventDispatcher] Init (Native Sync Mode)" << std::endl;
         return true;
     #else

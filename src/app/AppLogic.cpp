@@ -5,7 +5,7 @@
  * Обрабатывает сырые данные сенсоров, детектирует жесты и управляет состоянием.
  *
  * Соответствует: docs/modules/app_logic.md
- * DEVELOPMENT_PLAN.MD - Спринт 2.10
+ * DEVELOPMENT_PLAN.MD - Спринт 2.7 / 2.10
  */
 #include "app/AppLogic.h"
 #include "core/Logger.h"
@@ -40,6 +40,13 @@ AppLogic::AppLogic()
 }
 
 bool AppLogic::init(ConfigManager* configManager, EventDispatcher* dispatcher) {
+    // 1. Сброс состояния (ВАЖНО для тестов и перезагрузки)
+    m_isMuted = false;
+    m_currentMask = 0;
+    for (int i = 0; i < 16; ++i) {
+        m_sensorContexts[i] = SensorContext(); // Сброс в OPEN и очистка истории
+    }
+
     m_configManager = configManager;
     m_dispatcher = dispatcher;
     
@@ -54,13 +61,19 @@ bool AppLogic::init(ConfigManager* configManager, EventDispatcher* dispatcher) {
     m_vibratoAmplitudeMin = m_configManager->getVibratoAmplitudeMin();
 
     #if defined(ESP32_TARGET)
-    m_sensorQueue = xQueueCreate(20, sizeof(Event));
+    // (Очередь создается только один раз, если она еще не создана)
     if (m_sensorQueue == nullptr) {
-        LOG_ERROR(TAG, "Failed to create queue");
-        return false;
+        m_sensorQueue = xQueueCreate(20, sizeof(Event));
+        if (m_sensorQueue == nullptr) {
+            LOG_ERROR(TAG, "Failed to create queue");
+            return false;
+        }
+    } else {
+        // Если очередь уже есть (перезагрузка конфига), можно её очистить
+        xQueueReset(m_sensorQueue);
     }
     #else
-    m_sensorQueue = (void*)1; // Fake handle for tests
+    m_sensorQueue = (void*)1; 
     #endif
     
     return true;
@@ -68,6 +81,8 @@ bool AppLogic::init(ConfigManager* configManager, EventDispatcher* dispatcher) {
 
 void AppLogic::startTask() {
     #if defined(ESP32_TARGET)
+    // Запускаем задачу только если она еще не запущена (в реальной RTOS
+    // нужно следить за handle задачи, здесь упрощенно)
     xTaskCreate(appLogicTask, "appLogicTask", 4096, this, 5, nullptr);
     #endif
 }
