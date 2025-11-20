@@ -2,9 +2,9 @@
  * AppLogic.h
  *
  * Соответствует: docs/modules/app_logic.md
- * DEVELOPMENT_PLAN.MD - Спринт 2.1
+ * DEVELOPMENT_PLAN.MD - Спринт 2.10
  */
-#pragma once 
+#pragma once
 
 #include "core/ConfigManager.h"
 #include "core/EventDispatcher.h"
@@ -58,23 +58,21 @@ private:
      */
     static void appLogicTask(void* params);
     
-    // (Новое) Объявление метода обработки
-    void processSensorEvent(const Event& event);
-
     /**
      * @brief "Медленный" цикл, выполняющий всю логику (DSP, FSM).
      */
     void runAppLogicTask();
+    
+    // Объявление метода обработки
+    void processSensorEvent(const Event& event);
 
-    /**
-     * @brief Собирает 8-битную маску и публикует, если она изменилась.
-     */
     void updateMaskAndPublish();
 
     /**
-     * @brief (TBD) Реализация алгоритма детекции вибрато (напр. FFT).
+     * @brief Реализация алгоритма детекции вибрато (Zero-Crossing).
+     * @return float Глубина вибрато (0.0 - 1.0). Если 0.0 - вибрато нет.
      */
-    bool analyzeVibrato(const std::vector<int>& history);
+    float analyzeVibrato(const std::vector<int>& history);
 
     EventDispatcher* m_dispatcher;
     ConfigManager* m_configManager;
