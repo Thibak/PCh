@@ -2,9 +2,10 @@
  * Scheduler.cpp
  *
  * Реализация `core/scheduler`.
+ * Связывает все модули системы воедино.
  *
  * Соответствует: docs/modules/core_scheduler.md
- * DEVELOPMENT_PLAN.MD - Спринт 2.1
+ * DEVELOPMENT_PLAN.MD - Спринт 2.9
  */
 
 #include "core/Scheduler.h"
@@ -14,13 +15,10 @@
 
 Application::Application() {
     // Конструктор
-    // Объекты m_configManager, m_eventDispatcher, m_appLogic и т.д.
-    // создаются здесь автоматически.
 }
 
 /**
  * @brief Инициализирует всю систему
- * (Фаза 1 - 4 из docs/modules/core_scheduler.md)
  */
 void Application::init(
     IHalStorage* storage,
@@ -33,36 +31,33 @@ void Application::init(
 ) {
     
     // --- Фаза 1: Хранилище, Система и Конфигурация ---
-    // (storage и system переданы нам из main.cpp)
+    // Сначала грузим конфиг, так как от него зависят многие HAL модули
     m_configManager.init(storage);
 
     // --- Фаза 2: USB и Логирование ---
-
-    // Инициализируем USB (Mass Storage + CDC)
     usb->init(storage);
-
-    // (usb передан нам из main.cpp)
     Logger::getInstance()->init(&m_configManager, usb, system);
     
+    // Теперь логгер инициализирован и безопасен (в Arduino среде)
     LOG_INFO(TAG, "Boot: Logger initialized.");
 
     // --- Фаза 3: Диспетчер Событий ---
-    m_eventDispatcher.init(); // Запускает внутреннюю задачу (или ее mock)
+    m_eventDispatcher.init();
     LOG_INFO(TAG, "Boot: EventDispatcher running.");
 
-    // --- Фаза 4: Инициализация HAL и APP (Внедрение зависимостей) ---
+    // --- Фаза 4: Инициализация HAL и APP ---
     
-    // Инициализируем HAL (передаем зависимости)
-    // (Мы предполагаем, что HAL init() безопасны для вызова на Host)
+    // HAL
     sensors->init(&m_configManager, &m_eventDispatcher);
-    led->init(&m_configManager); // (Было пропущено в доке 0.6, но добавлено в 0.9)
+    led->init(&m_configManager);
     ble->init(&m_eventDispatcher);
     power->init(&m_configManager, &m_eventDispatcher);
     
-    // Инициализируем APP (передаем зависимости)
+    // APP
     m_appFingering.init(storage);
     m_appLogic.init(&m_configManager, &m_eventDispatcher);
     
+    // Для Midi нужна базовая частота из конфига
     float basePitch = m_configManager.getBasePitchHz();
     m_appMidi.init(ble, led, basePitch);
     
@@ -72,14 +67,15 @@ void Application::init(
     m_appLogic.subscribe(&m_eventDispatcher);
     m_appMidi.subscribe(&m_eventDispatcher);
     m_appFingering.subscribe(&m_eventDispatcher);
-    power->subscribe(&m_eventDispatcher); // (halPower - единственный HAL, который слушает)
     
-    LOG_INFO(TAG, "Boot: Subscriptions complete.");
+    // HAL подписки
+    power->subscribe(&m_eventDispatcher);
+    
+    LOG_INFO(TAG, "Boot sequence complete. Ready.");
 }
 
 /**
  * @brief Запускает задачи FreeRTOS
- * (Фаза 6 из docs/modules/core_scheduler.md)
  */
 void Application::startTasks(
     IHalSensors* sensors,
@@ -87,7 +83,7 @@ void Application::startTasks(
     IHalBle* ble,
     IHalPower* power
 ) {
-    LOG_INFO(TAG, "Boot: Starting tasks...");
+    LOG_INFO(TAG, "Boot: Starting FreeRTOS tasks...");
 
     sensors->startTask();
     m_appLogic.startTask();
