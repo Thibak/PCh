@@ -48,12 +48,23 @@ struct Event {
         NotePitchPayload notePitch;
     } payload;
 
-    // Конструкторы для удобства
-    // Конструктор для событий без данных
+    // Конструкторы
+    
+    // 1. Для событий без данных
     Event(EventType t) : type(t) {}
-    // Конструктор для SENSOR_VALUE_CHANGED
+
+    // 2. Для SENSOR_VALUE_CHANGED
     Event(EventType t, SensorValuePayload p) : type(t), payload{.sensorValue = p} {}
-    // Конструктор для SENSOR_MASK_CHANGED
+
+    // 3. Для SENSOR_MASK_CHANGED
     Event(EventType t, SensorMaskPayload p) : type(t), payload{.sensorMask = p} {}
-    // ... (и т.д. для других payloads)
+
+    // 4. Для HALF_HOLE_DETECTED
+    Event(EventType t, HalfHolePayload p) : type(t), payload{.halfHole = p} {}
+
+    // 5. Для VIBRATO_DETECTED
+    Event(EventType t, VibratoPayload p) : type(t), payload{.vibrato = p} {}
+
+    // 6. Для NOTE_PITCH_SELECTED (Именно его не хватало)
+    Event(EventType t, NotePitchPayload p) : type(t), payload{.notePitch = p} {}
 };

@@ -37,6 +37,9 @@ public:
      */
     bool postEvent(const Event& event);
 
+    // Для тестов
+    void reset();
+
 private:
     /**
      * @brief Статический метод-обертка для запуска задачи FreeRTOS.

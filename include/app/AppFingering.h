@@ -1,8 +1,8 @@
 /*
- * AppFingering.h
+ * Заголовок для: AppFingering
  *
  * Соответствует: docs/modules/app_fingering.md
- * DEVELOPMENT_PLAN.MD - Спринт 2.1
+ * DEVELOPMENT_PLAN.MD - Спринт 2.6
  */
 #pragma once
 
@@ -11,7 +11,7 @@
 #include "interfaces/IEventHandler.h"
 #include <map>
 #include <string>
-#include <cstdint> 
+#include <cstdint>
 
 // (Определение структуры FingeringRule)
 struct FingeringRule {
@@ -62,4 +62,5 @@ private:
     // Переменные состояния
     uint8_t m_currentMask; // Последняя активная маска
     int m_lastPublishedNote; // Последняя отправленная нота (для защиты от "дребезга")
+    int m_currentHalfHoleId; // <-- ДОБАВЛЕНО: ID текущего полузакрытого сенсора (-1 если нет)
 };

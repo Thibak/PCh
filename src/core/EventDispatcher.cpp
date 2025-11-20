@@ -56,6 +56,14 @@ bool EventDispatcher::init() {
     #endif
 }
 
+// (Новое)
+void EventDispatcher::reset() {
+    m_subscribers.clear();
+    #if defined(NATIVE_TEST)
+        std::cout << "[EventDispatcher] Reset subscribers." << std::endl;
+    #endif
+}
+
 bool EventDispatcher::subscribe(EventType type, IEventHandler* handler) {
     if (handler == nullptr) return false;
     

@@ -53,13 +53,13 @@
 * **(+) Спринт 2.4 (Код+Unit)**: Модуль `core/event_dispatcher` (с использованием `MockEventHandler`).
   * Реализация `src/core/EventDispatcher.cpp` (Native Sync Mode).
   * Unit-тест `test/test_event_dispatcher/test_main.cpp`.
-* **(->) Спринт 2.5 (Код+Unit)**: Модуль `diagnostics/logger`.
+* **(+) Спринт 2.5 (Код+Unit)**: Модуль `diagnostics/logger`.
   * Реализация `src/core/Logger.cpp`.
   * Unit-тест `test/test_logger/test_main.cpp` (проверка форматирования и вывода в `MockHalUsb`).
-* **Спринт 2.6 (Код+Unit)**: Модуль `app/fingering`.
+* **(+) Спринт 2.6 (Код+Unit)**: Модуль `app/fingering`.
   * Реализация `src/app/AppFingering.cpp`.
   * Unit-тест `test/test_app_fingering/test_main.cpp` (Изолированная проверка таблицы аппликатур).
-* **Спринт 2.7 (Код+Unit)**: Модуль `app/logic` (Часть 1: Mute, Mask).
+* **(-\>)Спринт 2.7 (Код+Unit)**: Модуль `app/logic` (Часть 1: Mute, Mask).
   * Реализация `src/app/AppLogic.cpp` (Базовая машина состояний).
   * Unit-тест `test/test_app_logic/test_main.cpp` (Изолированная проверка логики порогов).
 * **Спринт 2.8 (Код+Unit)**: Модуль `app/midi`.
