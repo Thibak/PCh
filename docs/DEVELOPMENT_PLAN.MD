@@ -62,10 +62,10 @@
 * **(+) Спринт 2.7 (Код+Unit)**: Модуль `app/logic` (Часть 1: Mute, Mask).
   * Реализация `src/app/AppLogic.cpp` (Базовая машина состояний).
   * Unit-тест `test/test_app_logic/test_main.cpp` (Изолированная проверка логики порогов).
-* **(-\>) Спринт 2.8 (Код+Unit)**: Модуль `app/midi`.
+* **(+) Спринт 2.8 (Код+Unit)**: Модуль `app/midi`.
   * Реализация `src/app/AppMidi.cpp`.
   * Unit-тест `test/test_app_midi/test_main.cpp` (Изолированная проверка генерации MIDI-команд).
-* **Спринт 2.9 (Код+Unit)**: Интеграция `core/scheduler`.
+* **(-\>) Спринт 2.9 (Код+Unit)**: Интеграция `core/scheduler`.
   * Реализация `src/core/Scheduler.cpp` (связывание всего).
   * Smoke-тест `test/test_scheduler/test_main.cpp` (уже существует, поддержка актуальности).
 * **Спринт 2.10 (Код+Unit)**: Доработка `app/logic` (Вибрато и Полузакрытие).

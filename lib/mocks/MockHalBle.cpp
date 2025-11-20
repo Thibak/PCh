@@ -79,6 +79,14 @@ void MockHalBle::simulateDisconnect() {
     }
 }
 
+void MockHalBle::reset() {
+    m_lastNoteOn = -1;
+    m_lastNoteOff = -1;
+    m_lastPitchBend = 0.5f;
+    m_allNotesOffCount = 0;
+    m_tuningMessagePitch = 0.0f;
+}
+
 // Геттеры
 int MockHalBle::getLastNoteOn() const { return m_lastNoteOn; }
 int MockHalBle::getLastNoteOff() const { return m_lastNoteOff; }

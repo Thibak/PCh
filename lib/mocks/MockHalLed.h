@@ -46,6 +46,9 @@ public:
     LedMode getCurrentState() const;
     int getBlinkOnceCount() const;
 
+    // (Новое) Сброс состояния между тестами
+    void reset();
+
 private:
     LedMode m_currentState;
     int m_blinkOnceCount;

@@ -54,3 +54,8 @@ LedMode MockHalLed::getCurrentState() const {
 int MockHalLed::getBlinkOnceCount() const {
     return m_blinkOnceCount;
 }
+
+void MockHalLed::reset() {
+    m_currentState = LedMode::OFF;
+    m_blinkOnceCount = 0;
+}

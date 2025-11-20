@@ -38,6 +38,9 @@ public:
      */
     void simulateDisconnect();
 
+    // (Новое) Сброс состояния
+    void reset();
+
     // Геттеры для проверки тестами (Спринт 2.14)
     int getLastNoteOn() const;
     int getLastNoteOff() const;
