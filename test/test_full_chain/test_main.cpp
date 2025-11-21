@@ -72,7 +72,7 @@ void setUp(void) {
     // Маска 3 (Сенсор 0 и 1 закрыты) -> Нота 62
     std::string fingering = 
         "0b00000000 0\n"
-        "0b00000001 60\n"
+        "0b00000001 60 0 61\n" // ВАЖНО: Здесь 4 токена!
         "0b00000011 62\n";
     mockStorage.writeFile("/fingering.cfg", fingering);
 

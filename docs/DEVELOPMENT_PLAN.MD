@@ -41,7 +41,7 @@
 * **(+) Спринт 1.10 (Код / Mock):** Реализация `MockHalSensors`. (Должен иметь API `pushMockSensorValue(id, value)`, чтобы тесты могли им управлять).  
 * **(+) Спринт 1.11 (Код / Mock):** Реализация `MockHalPower` и `MockHalSystem`. (Простые заглушки).
 
-### **Эпик 2: Ядро и Бизнес-Логика (Core & App Logic \- Host-First) (\<— в работе)**
+### **(+) Эпик 2: Ядро и Бизнес-Логика (Core & App Logic \- Host-First)**
 
 *Цель: Реализовать и протестировать 100% "мозга" устройства на ПК (`env:native`), используя Mock-классы из Эпика 1\.*
 
@@ -74,7 +74,7 @@
 * **(+) Спринт 2.11 (Код+Unit)**: Доработка `app/midi` (Настройка строя `base_pitch_hz`).
   * Доработка реализации.
   * Расширение Unit-теста.
-* **(-\>) Спринт 2.12 (Integration Tests)**: Полная цепочка сигналов (Host).
+* **(+) Спринт 2.12 (Integration Tests)**: Полная цепочка сигналов (Host).
   * Создание `test/integration/test_full_chain/test_main.cpp`.
   * Тест 1: `MockSensor` -\> `AppLogic` -\> `EventDispatcher` -\> `AppFingering` -\> `AppMidi` -\> `MockHalBle` (Проверка: нажатие сенсора вызывает NoteOn).
   * Тест 2: `MockSensor` (Mute) -\> ... -\> `MockHalBle` (AllNotesOff).
@@ -102,6 +102,8 @@
 * **Спринт 2.19 (Тест)**: Интеграционный тест для `app/midi` (Проверка `base_pitch_hz`). -->
 
 ### **Эпик 3: Реализация HAL (Hardware Abstraction Layer)**
+
+**(-\>) Спринт 3.0 (Код):**Предварительная работа - Context Stuffing. 
 
 *Цель: Написать "железные" реализации HAL-интерфейсов для ESP32-S3 и протестировать их в изоляции.*
 
