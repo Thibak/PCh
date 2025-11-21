@@ -78,7 +78,9 @@
   * Создание `test/integration/test_full_chain/test_main.cpp`.
   * Тест 1: `MockSensor` -\> `AppLogic` -\> `EventDispatcher` -\> `AppFingering` -\> `AppMidi` -\> `MockHalBle` (Проверка: нажатие сенсора вызывает NoteOn).
   * Тест 2: `MockSensor` (Mute) -\> ... -\> `MockHalBle` (AllNotesOff).
-  * Тест 3: Изменение конфига -\> Перезагрузка логики (через моки).
+  * Тест 3: `test_half_hole_chain`: Проверка, что "среднее" нажатие вызывает альтернативную ноту.
+  * Тест 4: `test_vibrato_chain`: Проверка, что колебание сенсора вызывает `PitchBend` на выходе.
+  * Тест 5: `test_config_reload`: Проверка, что изменение файла `settings.cfg` и ре-инициализация меняют поведение устройства (проверим на `base_pitch_hz`).
 
 
 <!-- * **(+) Спринт 2.3 (Тест)**: Создание `test/test_main.cpp` и интеграционный тест для `core/scheduler` (проверка `init` и `startTasks` на `env:native`).

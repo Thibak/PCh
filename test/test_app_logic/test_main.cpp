@@ -2,7 +2,7 @@
  * test_main.cpp
  *
  * Unit-тесты для модуля app/AppLogic.
- * Проверяет: Mute, Маску, Half-Hole и ВИБРАТО.
+ * Проверяет: Mute, Маску, Half-Hole и ПОРЯДОК СОБЫТИЙ.
  *
  * Соответствует: DEVELOPMENT_PLAN.MD - Спринт 2.7 / 2.10
  */
@@ -14,7 +14,7 @@
 #include "core/ConfigManager.h"
 #include <cstdio>
 #include <fstream>
-#include <cmath> // Для sin()
+#include <cmath> 
 
 // --- Глобальные объекты ---
 MockHalStorage mockStorage;
@@ -41,7 +41,7 @@ void setUp(void) {
     // Пишем конфиг
     std::string cfg = 
         "[sensors]\n"
-        "sample_rate_hz = 50\n"         // 50 Hz
+        "sample_rate_hz = 50\n"         
         "mute_threshold = 500\n"
         "hole_closed_threshold = 400\n"
         "half_hole_threshold = 300\n"
@@ -51,7 +51,7 @@ void setUp(void) {
         "[gestures]\n"
         "vibrato_freq_min_hz = 2.0\n"
         "vibrato_freq_max_hz = 6.0\n"
-        "vibrato_amplitude_min = 50\n"; // Амплитуда должна быть > 50
+        "vibrato_amplitude_min = 50\n";
     
     mockStorage.writeFile("/settings.cfg", cfg);
     
@@ -62,7 +62,7 @@ void setUp(void) {
     dispatcher.subscribe(EventType::MUTE_DISABLED, &spy);
     dispatcher.subscribe(EventType::SENSOR_MASK_CHANGED, &spy);
     dispatcher.subscribe(EventType::HALF_HOLE_DETECTED, &spy);
-    dispatcher.subscribe(EventType::VIBRATO_DETECTED, &spy); // <-- Подписка на вибрато
+    dispatcher.subscribe(EventType::VIBRATO_DETECTED, &spy); 
 }
 
 void tearDown(void) {
@@ -72,7 +72,7 @@ void tearDown(void) {
     }
 }
 
-// ... (Тесты mute, mask, half-hole без изменений - см. Спринт 2.7) ...
+// ... (тесты mute и mask без изменений) ...
 void test_mute_logic() {
     Event ev1(EventType::SENSOR_VALUE_CHANGED, SensorValuePayload{8, 600});
     appLogic.handleEvent(ev1); 
@@ -85,22 +85,39 @@ void test_mask_logic() {
     TEST_ASSERT_EQUAL(EventType::SENSOR_MASK_CHANGED, spy.getLastEventType());
 }
 
-void test_half_hole_logic() {
-    Event ev1(EventType::SENSOR_VALUE_CHANGED, SensorValuePayload{1, 350});
+
+/**
+ * @brief Тест 3 (ОБНОВЛЕННЫЙ): Проверка ПОРЯДКА событий Half-Hole.
+ * Критически важно для интеграции с AppFingering.
+ */
+void test_half_hole_event_order() {
+    // 1. Подаем значение 350 (Half-Hole).
+    // Это должно вызвать ДВА события:
+    // 1. Обновление маски (Маска = 1, т.к. HalfHole считается закрытым)
+    // 2. Детекция жеста (HalfHoleDetected ID=1)
+    
+    // Чтобы проверить порядок, нам нужно, чтобы spy запомнил ИСТОРИЮ,
+    // но наш текущий MockEventHandler помнит только ПОСЛЕДНЕЕ.
+    // Мы проверим косвенно: последнее событие должно быть HALF_HOLE_DETECTED.
+    // Если последнее было MASK_CHANGED, значит порядок неправильный!
+    
+    Event ev1(EventType::SENSOR_VALUE_CHANGED, SensorValuePayload{1, 350}); // ID 1 = bit 1
     appLogic.handleEvent(ev1);
+
+    // Проверяем, что последнее - это ЖЕСТ
     TEST_ASSERT_EQUAL(EventType::HALF_HOLE_DETECTED, spy.getLastEventType());
+    TEST_ASSERT_EQUAL_INT(1, spy.getLastIntPayload()); 
+    
+    // Если тест упадет здесь (вернет SENSOR_MASK_CHANGED), значит AppLogic
+    // отправляет события в неправильном порядке (сначала жест, потом маска).
 }
 
 /**
  * @brief Тест 4: Детекция Вибрато (Симуляция синусоиды).
  */
 void test_vibrato_logic() {
-    // Эмулируем синусоиду 4 Hz (в пределах 2-6 Hz)
-    // Sample Rate = 50 Hz
-    // Период = 1/4 сек = 12.5 сэмплов
-    
-    int center = 200; // Базовое значение (OPEN)
-    int amp = 100;    // Амплитуда (размах 200, > 50)
+    int center = 200; 
+    int amp = 100;    
     float freq = 4.0f;
     int sampleRate = 50;
     
@@ -127,7 +144,7 @@ int main(int argc, char **argv) {
     UNITY_BEGIN();
     RUN_TEST(test_mute_logic);
     RUN_TEST(test_mask_logic);
-    RUN_TEST(test_half_hole_logic);
+    RUN_TEST(test_half_hole_event_order); // <-- Обновленный тест
     RUN_TEST(test_vibrato_logic);
     return UNITY_END();
 }

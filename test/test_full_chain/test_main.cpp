@@ -13,6 +13,7 @@
 #include "core/Scheduler.h"
 #include <cstdio>
 #include <fstream>
+#include <cmath> // Для sin()
 
 // --- Подключаем Моки ---
 #include "MockHalStorage.h"
@@ -93,6 +94,8 @@ void tearDown(void) {
  * @brief Тест 1: Цепочка "Нажатие -> Нота"
  */
 void test_sensor_to_midi_chain() {
+    TEST_MESSAGE(" ");
+    TEST_MESSAGE("=== TEST 1: Sensor -> MIDI Chain ===");
     // 1. Исходное состояние: все открыто (значение 0)
     // Эмулируем, что сенсоры прочитали 0
     mockSensors.pushMockSensorValue(0, 0);
@@ -132,6 +135,8 @@ void test_sensor_to_midi_chain() {
  * @brief Тест 2: Цепочка Mute
  */
 void test_mute_chain() {
+    TEST_MESSAGE(" ");
+    TEST_MESSAGE("=== TEST 2: Mute Chain ===");
     // 1. Играем ноту 60
     mockSensors.pushMockSensorValue(0, 500);
     TEST_ASSERT_EQUAL_INT(60, mockBle.getLastNoteOn());
@@ -156,9 +161,108 @@ void test_mute_chain() {
     TEST_ASSERT_EQUAL_INT(1, mockLed.getBlinkOnceCount());
 }
 
+/**
+ * @brief Тест 3: Цепочка Half-Hole
+ */
+void test_half_hole_chain() {
+    TEST_MESSAGE(" ");
+    TEST_MESSAGE("=== TEST 3: Half-Hole Chain ===");
+    mockSensors.pushMockSensorValue(0, 500);
+    TEST_ASSERT_EQUAL_INT(60, mockBle.getLastNoteOn());
+
+    // Полузакрытие (350: 300 < val < 400) -> Нота 61
+    mockSensors.pushMockSensorValue(0, 350);
+    TEST_ASSERT_EQUAL_INT(61, mockBle.getLastNoteOn());
+    TEST_ASSERT_EQUAL_INT(60, mockBle.getLastNoteOff());
+}
+
+/**
+ * @brief Тест 4: Цепочка Вибрато
+ */
+void test_vibrato_chain() {
+    TEST_MESSAGE(" ");
+    TEST_MESSAGE("=== TEST 4: Vibrato Chain ===");
+    int center = 200; 
+    int amp = 100;   
+    float freq = 4.0f;
+    int sampleRate = 50;
+    
+    mockBle.reset(); 
+
+    for (int i = 0; i < sampleRate; ++i) {
+        float t = (float)i / (float)sampleRate;
+        int val = center + (int)(amp * sin(2 * 3.14159f * freq * t));
+        mockSensors.pushMockSensorValue(0, val);
+    }
+    TEST_ASSERT_NOT_EQUAL(0.5f, mockBle.getLastPitchBend()); 
+}
+
+/**
+ * @brief Тест 5: Перезагрузка конфигурации и ЛОГИКИ (Спринт 2.12)
+ * Проверяет, что изменение порога в файле реально меняет поведение AppLogic.
+ */
+void test_config_reload() {
+    TEST_MESSAGE(" ");
+    TEST_MESSAGE("=== TEST 5: Config Reload ===");
+    // --- ЭТАП 1: Старый конфиг (Mute Threshold = 500) ---
+    
+    // 1. Проверяем, что 600 вызывает Mute
+    mockSensors.pushMockSensorValue(8, 600); 
+    TEST_ASSERT_EQUAL_INT(1, mockBle.getAllNotesOffCount()); // Сработало
+
+    // Сбрасываем мок, чтобы проверить второй этап чисто
+    mockBle.reset();
+    // Возвращаем сенсор Mute в "открыто" (0), чтобы логика сбросила состояние m_isMuted
+    mockSensors.pushMockSensorValue(8, 0);
+
+    // --- ЭТАП 2: Новый конфиг (Mute Threshold = 700) ---
+
+    // 2. Переписываем конфиг
+    std::string new_settings = 
+        "[system]\n"
+        "base_pitch_hz = 415.0\n"
+        "[sensors]\n"
+        "sample_rate_hz = 50\n"
+        "mute_threshold = 700\n"  // <--- ПОВЫШАЕМ ПОРОГ
+        "hole_closed_threshold = 400\n"
+        "half_hole_threshold = 300\n"
+        "vibrato_amplitude_min = 50\n"
+        "vibrato_freq_min_hz = 2.0\n"
+        "vibrato_freq_max_hz = 6.0\n"
+        "[app_logic]\n"
+        "mute_sensor_id = 8\n"
+        "hole_sensor_ids = 0, 1, 2\n";
+    mockStorage.writeFile("/settings.cfg", new_settings);
+
+    // 3. "Перезагружаем" устройство (Init заново читает конфиг и перенастраивает AppLogic)
+    app.init(&mockStorage, &mockSystem, &mockUsb, &mockSensors, &mockLed, &mockBle, &mockPower);
+    app.startTasks(&mockSensors, &mockLed, &mockBle, &mockPower);
+
+    // 4. Проверяем Pitch (чтобы убедиться, что ConfigManager перечитал файл)
+    mockBle.simulateConnect();
+    TEST_ASSERT_EQUAL_FLOAT(415.0f, mockBle.getTuningMessageSent());
+
+    // 5. ПРОВЕРКА ЛОГИКИ: Подаем то же значение 600
+    // Раньше это вызывало Mute. Теперь (порог 700) это должно быть "открыто".
+    mockSensors.pushMockSensorValue(8, 600); 
+    
+    // Ожидаем, что AllNotesOff НЕ был отправлен (счетчик 0 после сброса)
+    TEST_ASSERT_EQUAL_INT(0, mockBle.getAllNotesOffCount());
+
+    // 6. Подаем 800 (выше нового порога)
+    mockSensors.pushMockSensorValue(8, 800);
+    
+    // Теперь должно сработать
+    TEST_ASSERT_EQUAL_INT(1, mockBle.getAllNotesOffCount());
+}
+
+
 int main(int argc, char **argv) {
     UNITY_BEGIN();
     RUN_TEST(test_sensor_to_midi_chain);
     RUN_TEST(test_mute_chain);
+    RUN_TEST(test_half_hole_chain);
+    RUN_TEST(test_vibrato_chain);
+    RUN_TEST(test_config_reload);
     return UNITY_END();
 }
